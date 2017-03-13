@@ -6,6 +6,7 @@ module.exports = exports = {};
 
 exports.serverOn = function(server, done){
   if(!server.isRunning){
+    console.log('server', server);
     server.listen(process.env.PORT, () => {
       server.isRunning = true;
       debug('Server up!');

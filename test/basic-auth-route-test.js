@@ -1,6 +1,6 @@
 'use strict';
 
-require('test-env.js');
+require('./lib/test-env.js');
 const awsMocks = require('./lib/aws-mocks.js'); //eslint-disable-line
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
@@ -68,7 +68,7 @@ describe('User Tests', function(){
       });
       it('should return a token', done => {
         debug('Signin Get');
-        request.get(`${url}/api/singin`)
+        request.get(`${url}/api/signin`)
         .auth('Cayla Zabel', 'isacodeboss')
         .end((err, res) => {
           if (err) return done(err);
