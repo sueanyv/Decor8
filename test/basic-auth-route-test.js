@@ -1,7 +1,7 @@
 'use strict';
 
 require('test-env.js');
-const awsMocks = require('./lib/aws-mocks.js');
+const awsMocks = require('./lib/aws-mocks.js'); //eslint-disable-line
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const expect = require('chai').expect;
@@ -29,5 +29,31 @@ describe('User Tests', function(){
   after( done => {
     serverToggle.serverOff(server, done);
   });
-  
-})
+  describe('Post /api/signup', function(){
+    describe('With a valid body', function(){
+      after(done => {
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+      it('should return a token', done => {
+        debug('/api/signup');
+        request.post(`${url}/api/signup`)
+        .send(exampleUser)
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.text).to.be.a('string');
+          done();
+        });
+      });
+    });
+  });
+  describe('Get /api/signin', function(){
+    describe('With a valid body', function(){
+      before(done => {
+        
+      })
+    })
+  })
+});
