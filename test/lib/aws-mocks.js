@@ -1,6 +1,6 @@
 'use strict';
 
-const awsMocks = require('aws-sdk-mock');
+const AWS = require('aws-sdk-mock');
 
 module.exports = exports = {};
 
@@ -26,4 +26,4 @@ AWS.mock('S3', 'upload', function(params, callback){
     return callback(new Error('body required'));
   }
   callback(null, exports.uploadMock);
-})
+});

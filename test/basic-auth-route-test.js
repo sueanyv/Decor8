@@ -37,7 +37,7 @@ describe('User Tests', function(){
         .catch(done);
       });
       it('should return a token', done => {
-        debug('/api/signup');
+        debug('Singup Post');
         request.post(`${url}/api/signup`)
         .send(exampleUser)
         .end((err, res) => {
@@ -52,8 +52,30 @@ describe('User Tests', function(){
   describe('Get /api/signin', function(){
     describe('With a valid body', function(){
       before(done => {
-        
-      })
-    })
-  })
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          done();
+        })
+        .catch(done);
+      });
+      after(done => {
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+      it('should return a token', done => {
+        debug('Signin Get');
+        request.get(`${url}/api/singin`)
+        .auth('Cayla Zabel', 'isacodeboss')
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          done();
+        });
+      });
+    });
+  });
 });
