@@ -22,7 +22,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.use(authRouter);
-app.use('errors');
+app.use(errors);
 
 app.listen(PORT, () => {
   debug(`server is up: ${PORT}`);
