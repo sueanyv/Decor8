@@ -14,14 +14,14 @@ postRouter.post('/api/category/categoryID/post', jsonParser, function(req, res, 
   .catch(next);
 });
 
-postRouter.get('/api/category/categoryID/post/:id', function(req, res, next) {
+postRouter.get('/api/post/:id', function(req, res, next) {
   Post.findById(req.params.id)
   .populate('comments')
   .then( post => res.json(post))
   .catch( err => next(createError(404, err.message)));
 });
 
-postRouter.put('/api/category/categoryID/post/:id', jsonParser, function(req, res, next) {
+postRouter.put('/api/post/:id', jsonParser, function(req, res, next) {
   Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
   .then( post => res.json(post))
   .catch( err => {
