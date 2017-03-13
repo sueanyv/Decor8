@@ -65,4 +65,12 @@ userSchema.methonds.generateFindHash = function() {
 
 userSchema.methods.generateToken = function () {
   debug('generateToken');
-}
+
+  return new Promise((resolve, reject) => {
+    this.generateFindHash()
+    .then( findHash => resolve(jwt.sign({ token: findHash}, process.env.APP_SECRET)))
+    .catch( err => reject (err));
+  });
+};
+
+module.exports = mongoose.model('user', userSchema);
