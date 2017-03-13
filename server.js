@@ -5,7 +5,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const Promise = require('bluebird');
+const Promise = require('bluebird'); //eslint-disable-line
 const debug = require('debug')('decor8:server');
 
 const authRouter = require('./route/basic-auth-router.js');
@@ -18,12 +18,16 @@ const app = express();
 
 mongoose.connect(process.env.MONGODB_URI);
 
+let morganFormat = process.env.PRODUCTION ? 'common' : 'dev';
+
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan(morganFormat));
 
 app.use(authRouter);
-app.use('errors');
+app.use(errors);
 
-app.listen(PORT, () => {
+const server = module.exports = app.listen(PORT, () => {
   debug(`server is up: ${PORT}`);
 });
+
+server.isRunning = true;
