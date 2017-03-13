@@ -14,12 +14,11 @@ const exampleComment = {
   profileId: '83831',
   postId: '23232',
   message: 'love this',
-  picUrl: 'www.facebook.com'
 };
 
 describe('comment', function() {
  describe('POST: /api/comment', function() {
-  describe('with a valid body', function() {
+  describe('with a valid comment', function() {
     after(done => {
       if (this.tempComment) {
         Comment.remove({})
