@@ -1,9 +1,9 @@
 'use strict';
 
-PORT='3000'
-API_URL='http://localhost:3000'
-MONGODB_URI='mongodb://localhost/decor8'
-APP_SECRET='rainydays'
-AWS_BUCKET='decor8'
-AWS_ACCESS_KEY_ID='AKIAJ3PCJPNCBGQ4Q7UA'
-AWS_SECRET_ACCESS_KEY='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'
+process.env.PORT='3000';
+process.env.API_URL='http://localhost:3000';
+process.env.MONGODB_URI='mongodb://localhost/decor8';
+process.env.APP_SECRET='rainydays';
+process.env.AWS_BUCKET='decor8';
+process.env.AWS_ACCESS_KEY_ID='AKIAJ3PCJPNCBGQ4Q7UA';
+process.env.AWS_SECRET_ACCESS_KEY='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';
