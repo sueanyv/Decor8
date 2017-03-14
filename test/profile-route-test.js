@@ -53,7 +53,6 @@ describe('Profile Routes', function () {
         .then( user => user.save())
         .then( user => {
           this.tempUser = user;
-          console.log('user in Post test', user)
           return user.generateToken();
         })
         .then( token => {
@@ -63,8 +62,6 @@ describe('Profile Routes', function () {
         .catch(done);
       });
       it('should return a profile', done => {
-        console.log('inside it in Post')
-        console.log('url', `${url}/api/profile`)
         request.post(`${url}/api/profile`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -79,7 +76,6 @@ describe('Profile Routes', function () {
           expect(res.body.bio).to.equal(exampleProfile.bio);
           expect(res.body.userID).to.be.a('string');
           expect(res.body.imageURI).to.equal(awsMocks.uploadMock.Location);
-          console.log('response',res.body)
           done();
         });
       });
