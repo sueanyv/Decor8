@@ -10,6 +10,7 @@ const del = require('del');
 const AWS = require('aws-sdk');
 const multer = require('multer');
 
+const User = require('../model/user.js');
 const Post = require('../model/post.js');
 const Category = require('../model/category.js');
 const bearerAuth = require('../lib/bearer-auth-middleware.js');
@@ -27,6 +28,7 @@ function s3uploadProm(params) {
 
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, data) => {
+      if (err) return reject(err);
       resolve(data);
     });
   });
@@ -34,15 +36,13 @@ function s3uploadProm(params) {
 
 postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload.single('image'), function(req, res, next) {
   debug('post /api/category/:categoryID/post');
+  console.log('req body in post route', req.body);
 
-  if(!req.body.name || !req.body.desc || !req.body.categoryID || !)
-  return next(createError(400, 'missing required values'));
-
-  req.body.userID = req.user._id;
-  if(!req.file) return next(createError(400, 'file not found'));
-  if(!req.file.path) return next(createError(500, 'file not save'));
-
+  if(!req.body.name || !req.body.desc){
+    return next(createError(400, 'missing required values'));
+  }
   let ext = path.extname(req.file.originalname);
+
   let params = {
     ACL: 'public-read',
     Bucket: process.env.AWS_BUCKET,
@@ -53,19 +53,26 @@ postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload
   Category.findById(req.params.categoryID)
   .then( () => s3uploadProm(params))
   .then( s3data => {
+
+    // console.log('got the s3 data', s3data);
+    // console.log('req.body.price', req.body.price);
     del([`${dataDir}/*`]);
     let postData = {
       name: req.body.name,
       desc: req.body.desc,
+      price: req.body.price,
       objectKey:s3data.Key,
       imageURI:s3data.Location,
       userID: req.user._id,
       categoryID:req.params.categoryID
     };
     return new Post(postData).save();
+    // return Category.findByIdAndAddPost(req.params.categoryID, postData);
   })
   .then( post => res.json(post))
   .catch(err => next(err));
+
+
 });
 
 postRouter.get('/api/post/:id', bearerAuth, function(req, res, next){

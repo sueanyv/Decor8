@@ -11,28 +11,29 @@ const Post = require('../model/post.js');
 const User = require('../model/user.js');
 const Category = require('../model/category.js');
 
-const AWS = require('aws-sdk-mock');
+// const AWS = require('aws-sdk-mock');
 
 const serverToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
 
 const url = `http://localhost:${process.env.PORT}`;
 
-const fakeUser = {
-  username: 'fakeuser',
+const exampleUser = {
+  username: 'exampleuser',
   password: '1234',
-  email: 'fakeuser@test.com'
+  email: 'exampleuser@test.com'
 };
 
-const fakeCategory = {
-  name: 'test category',
+const exampleCategory = {
+  categoryType: 'test categoryTypre',
   desc: 'test category description'
 };
 
-const fakePost = {
-  name: 'test post',
-  desc: 'test post description',
-  image: `${__dirname}/data/tester.png`
+const examplePost = {
+  name: 'example post name',
+  desc: 'example post desc',
+  price: 4,
+  image: `${__dirname}/data/tester.png`,
 };
 
 
@@ -41,9 +42,9 @@ describe('Post Routes', function() {
     serverToggle.serverOn(server, done);
   });
 
-  // after( done => {
-  //   serverToggle.serverOff(server, done);
-  // });
+  after( done => {
+    serverToggle.serverOff(server, done);
+  });
 
   afterEach( done => {
     Promise.all([
@@ -55,11 +56,11 @@ describe('Post Routes', function() {
     .catch(done);
   });
 
-  describe('POST: /api/category/:id/post', function() {
+  describe('POST: /api/category/:categoryID/post', function() {
     describe('with a valid token and valid data', function() {
       before( done => {
-        new User(fakeUser)
-        .generatePasswordHash(fakeUser.password)
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
         .then( user => user.save())
         .then( user => {
           this.tempUser = user;
@@ -73,8 +74,7 @@ describe('Post Routes', function() {
       });
 
       before( done => {
-        fakeCategory.userID = this.tempUser._id.toString();
-        new Category(fakeCategory).save()
+        new Category(exampleCategory).save()
         .then( category => {
           this.tempCategory = category;
           done();
@@ -82,29 +82,154 @@ describe('Post Routes', function() {
         .catch(done);
       });
 
-      after( done => {
-        delete fakeCategory.userID;
-        done();
-      });
-
       it('should return a post', done => {
         request.post(`${url}/api/category/${this.tempCategory._id}/post`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
-        .field('name', fakePost.name)
-        .field('desc', fakePost.desc)
-        .attach('image', fakePost.image)
+        .field('name', examplePost.name)
+        .field('desc', examplePost.desc)
+        .field('price', examplePost.price)
+        .attach('image', examplePost.image)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.status).to.equal(200);
-          expect(res.body.name).to.equal(fakePost.name);
-          expect(res.body.desc).to.equal(fakePost.desc);
+          expect(res.body.name).to.equal(examplePost.name);
+          expect(res.body.desc).to.equal(examplePost.desc);
           expect(res.body.categoryID).to.equal(this.tempCategory._id.toString());
           expect(res.body.imageURI).to.equal(awsMocks.uploadMock.Location);
           done();
         });
       });
     });
+
+    describe('with invalid body', function(){
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch();
+      });
+
+      it('should return a 400 for bad request', done => {
+        request.post(`${url}/api/category/categoryID/post`)
+        .send({})
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+    describe('if no token found', () => {
+      it('should return a 401 status code', done => {
+        request.post(`${url}/api/category/categoryID/post`)
+        .send(examplePost)
+        .set({})
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
   });
+
+  describe('GET: /api/post/:id', () => {
+    before( done => {
+      new User (exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+    before( done => {
+      new Category(exampleCategory).save()
+      .then( category => {
+        this.tempCategory = category;
+        done();
+      })
+      .catch(done);
+    });
+    before ( done => {
+      console.log('before hit');
+      examplePost.userID = this.tempUser._id;
+      examplePost.imageURI = 'stuff';
+      examplePost.objectKey = 'stuff';
+      examplePost.categoryID = this.tempCategory._id;
+      new Post(examplePost).save()
+      .then( post => {
+        console.log('in then block');
+        this.tempPost = post;
+        done();
+      })
+      .catch(done);
+    });
+
+    after( done => {
+      delete examplePost.userID;
+      done();
+    });
+
+    it('should return a post', done => {
+      console.log('get test test' );
+      request.get(`${url}/api/post/${this.tempPost._id}`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`
+      })
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.equal(examplePost.name);
+        expect(res.body.desc).to.equal(examplePost.desc);
+        expect(res.body.categoryID).to.equal(this.tempCategory._id.toString());
+        expect(res.body.imageURI).to.equal('stuff');
+        expect(res.body.userID).to.be.a('String');
+        done();
+      });
+    });
+
+    it('should return a post', done => {
+      request.get(`${url}/api/post/`)
+      .set({
+        Authorization: `Bearer ${this.tempToken}`,
+      })
+      .end((err, res) => {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+    describe('invalid if no token found', () => {
+      it('should return a 401 status', done => {
+        request.get(`${url}/api/post/badid`)
+      .set({})
+      .end((err, res) => {
+        expect(res.status).to.equal(401);
+        done();
+      });
+      });
+    });
+  });
+
+
+
 });
+// });
+// });
