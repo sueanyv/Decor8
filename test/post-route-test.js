@@ -40,10 +40,10 @@ describe('Post Routes', function() {
   before( done => {
     serverToggle.serverOn(server, done);
   });
-  
-  after( done => {
-    serverToggle.serverOff(server, done);
-  });
+
+  // after( done => {
+  //   serverToggle.serverOff(server, done);
+  // });
 
   afterEach( done => {
     Promise.all([

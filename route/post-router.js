@@ -35,14 +35,10 @@ function s3uploadProm(params) {
 postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload.single('image'), function(req, res, next) {
   debug('post /api/category/:categoryID/post');
 
-  if(!req.body.name) return next(createError(400, 'expected a name'));
-  if(!req.body.desc) return next(createError(400, 'expected a desc'));
+  if(!req.body.name || !req.body.desc || !req.body.categoryID || !)
+  return next(createError(400, 'missing required values'));
+
   req.body.userID = req.user._id;
-
-  new Category(req.body).save()
-.then( category => res.json(category))
-.catch(next);
-
   if(!req.file) return next(createError(400, 'file not found'));
   if(!req.file.path) return next(createError(500, 'file not save'));
 
