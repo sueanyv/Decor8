@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird'); //eslint-disable-line
 const debug = require('debug')('decor8:server');
 
+const postRouter = require('./route/post-router.js');
 const profileRouter = require('./route/profile-router.js');
 const categoryRouter = require('./route/category-router.js');
 const authRouter = require('./route/basic-auth-router.js');
@@ -27,6 +28,7 @@ app.use(morgan(morganFormat));
 app.use(profileRouter);
 app.use(categoryRouter);
 app.use(authRouter);
+app.use(postRouter);
 app.use(errors);
 
 const server = module.exports = app.listen(PORT, () => {
