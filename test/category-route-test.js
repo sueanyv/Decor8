@@ -20,7 +20,7 @@ const exampleCategory = {
   desc: 'test desc'
 };
 
-const examplePost ={
+const examplePost ={ //eslint-disable-line
   name: 'example post name',
   desc: 'example post desc',
   imageURI: 'example image uri',
