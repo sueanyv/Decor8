@@ -1,6 +1,6 @@
 'use strict';
 
-const jsonParser = require('body-parser');
+const jsonParser = require('body-parser').json();
 const debug = require('debug')('decor8:profile-router');
 const fs = require('fs');
 const path = require('path');
@@ -31,17 +31,7 @@ function s3uploadProm(params) {
   });
 }
 
-profileRouter.post('/api/profile', bearerAuth,  jsonParser, function(req, res, next) {
-  debug('POST: /api/profile');
-
-  new Profile({
-    
-  })
-}
-
-
-
- upload.single('image'), jsonParser, function(req, res, next) {
+profileRouter.post('/api/profile', bearerAuth, upload.single('image'), jsonParser, function(req, res, next) {
   debug('POST: /api/profile');
 
   if(!req.file) {
@@ -60,34 +50,34 @@ profileRouter.post('/api/profile', bearerAuth,  jsonParser, function(req, res, n
     Body: fs.createReadStream(req.file.path)
   };
 
-  Profile.findById(req.params.userID)
-  .then( () => s3uploadProm(params))
+  s3uploadProm(params)
   .then( s3data => {
     del([`${dataDir}/*`]);
     let imageData = {
       name: req.body.name,
       bio: req.body.bio,
+      created: req.body.created,
       userID: req.user._id,
       imageURI: s3data.Location,
       objectKey: s3data.Key
     };
     return new Profile(imageData).save();
   })
-  .then( pic => res.json(pic))
+  .then( profile => res.json(profile))
   .catch( err => next(err));
 });
 
 
 
-profileRouter.get('/api/profile/:userID', bearerAuth, function(req, res, next){
-  debug('GET: /api/profile/:userID');
+profileRouter.get('/api/profile/:id', bearerAuth, function(req, res, next){
+  debug('GET: /api/profile/:id');
 
   Profile.findById(req.params.id)
   .then( profile => {
     if(profile.userID.toString() !== req.user._id.toString()){
       return next(createError(401, 'invalid user'));
     }
-    res.json(profile);
+    return res.json(profile);
   })
   .catch(next);
 });
@@ -97,12 +87,27 @@ profileRouter.put('/api/profile/:id', bearerAuth, jsonParser, function(req, res,
 
   if(!req.body.bio) return next(createError(400, 'bio required'));
   if(!req.body.name) return next(createError(400, 'name required'));
-  if(!req.body.age) return next(createError(400, 'age  required'));
 
   Profile.findByIdAndUpdate(req.params.id, req.body, {new:true})
   .then( profile => {
     if(!profile) return next(createError(404, 'profile not found'));
-    res.json(profile);
+    return res.json(profile);
   })
   .catch(next);
+});
+
+profileRouter.delete('/api/profile/:id', bearerAuth, function(req, res, next){
+  debug('DELETE: /api/profile/:id');
+
+  let params = {
+    Bucket: process.env.AWS_BUCKET,
+  };
+
+  Profile.findByIdAndRemove(req.params.id)
+  .then(() => {
+    s3.deleteObjectProm(params)
+  })
+  .then(() => res.sendStatus(204))
+  .catch(next);
+
 });
