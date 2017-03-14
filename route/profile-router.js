@@ -25,12 +25,23 @@ function s3uploadProm(params) {
   debug('s3uploadProm');
   return new Promise((resolve, reject) => {
     s3.upload(params, (err, s3data) => {
+      if (err) return reject(err);
       resolve(s3data);
     });
   });
 }
 
-profileRouter.post('/api/profile/:userID', bearerAuth, upload.single('image'), jsonParser, function(req, res, next) {
+profileRouter.post('/api/profile', bearerAuth,  jsonParser, function(req, res, next) {
+  debug('POST: /api/profile');
+
+  new Profile({
+    
+  })
+}
+
+
+
+ upload.single('image'), jsonParser, function(req, res, next) {
   debug('POST: /api/profile');
 
   if(!req.file) {
@@ -57,13 +68,16 @@ profileRouter.post('/api/profile/:userID', bearerAuth, upload.single('image'), j
       name: req.body.name,
       bio: req.body.bio,
       userID: req.user._id,
-      imageURI: s3data.Location
+      imageURI: s3data.Location,
+      objectKey: s3data.Key
     };
     return new Profile(imageData).save();
   })
   .then( pic => res.json(pic))
   .catch( err => next(err));
 });
+
+
 
 profileRouter.get('/api/profile/:userID', bearerAuth, function(req, res, next){
   debug('GET: /api/profile/:userID');
