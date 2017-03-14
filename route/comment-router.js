@@ -39,3 +39,10 @@ commentRouter.post('api/postId/:postId/comment', jsonParser, function(req, res, 
   .then( comment => res.json(comment))
   .catch( err => next(err));
 });
+
+commentRouter.get('api/postId/:postId/comment',  function(req, res, next) {
+  debug('GET: api/postId/:postId/comment');
+comment.findById(req.params.postid)
+  .then(list => res.json(list))
+  .catch(next);
+});
