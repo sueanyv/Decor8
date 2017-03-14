@@ -276,5 +276,143 @@ describe('Category Routes', function(){
         });
       });
     });
+    describe('With a invalid body, valid id, and token', function(){
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategoryId = category._id;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return an update Category', done => {
+        request.put(`${url}/api/category/${this.tempCategoryId}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+    describe('With a valid body, invalid id, and token', function(){
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategoryId = category._id;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return an update Category', done => {
+        request.put(`${url}/api/category/badid`)
+        .send({categoryType: 'new category type', desc: 'new category desc'})
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+    describe('With a valid body, valid id, and invalid token', function(){
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategoryId = category._id;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return an update Category', done => {
+        request.put(`${url}/api/category/${this.tempCategoryId}`)
+        .send({categoryType: 'new category type', desc: 'new category desc'})
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
+  describe('Delete /api/category/:id', function(){
+    describe('With a valid id', function(){
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategoryId = category._id;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return a 204', done => {
+        request.delete(`${url}/api/category/${this.tempCategoryId}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(204);
+          done();
+        });
+      });
+    });
   });
 });

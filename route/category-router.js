@@ -33,12 +33,14 @@ categoryRouter.get('/api/category/:id', bearerAuth, function(req, res, next){
 categoryRouter.put('/api/category/:id', bearerAuth, jsonParser, function(req, res, next){
   debug('Put /api/category/:id');
   if(!req.body.categoryType && !req.body.name) return next(createError(400, 'expected an update.'));
-  Category.findByIdAndUpdate(req.params.id, res.body, {new: true})
-  .then(category => res.json(category))
+  Category.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then(category => {
+    return res.json(category);
+  })
   .catch(next);
 });
 
-categoryRouter.delete('/api/category/delete:id', bearerAuth, function(req, res, next){
+categoryRouter.delete('/api/category/:id', bearerAuth, function(req, res, next){
   debug('Delete /api/category/:id');
   Category.findByIdAndRemove(req.params.id)
   .then(() => res.sendStatus(204))
