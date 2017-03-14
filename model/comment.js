@@ -8,6 +8,7 @@ const commentSchema = Schema({
   postId: { type: String, required: true },
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
+  objectKey: { type: String, required: true, unique: true },
   imgURI: { type: String, required: true }
 });
 
