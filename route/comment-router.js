@@ -3,6 +3,7 @@
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('cfgram:auth-router');
 const Router = require('express').Router;
+const del = require('del');
 const basicAuth = require('../lib/basic-auth-middleware.js');
 
 const User = require('../model/user.js');
@@ -10,17 +11,16 @@ const Post = require('../model/post.js');
 
 const authRouter = module.exports = Router();
 
-commentRouter.post('api/postId/:postId/comment', jsonParser, function(req, res, next) {
+commentRouter.post('api/postId/:postId/comment', jsonParser, bearerAuth, function(req, res, next) {
   debug('api/post/:postId/comment');
   console.log(api / post /: postId / comment);
-  Post.findByIdAndAddComment(req.params.postId, req.body)
+  Post.findByIdAndAddComment(req.params.postId, req.body,req.userId)
     .then(comment =>
       res.json(comment))
     .catch(() => {
       console.log('catch statement running');
       return next(createError(400, 'bad request error'));
     });
-});
 
 Post.findById(req.params.postID)
   .then(() => s3uploadProm(params))
@@ -40,14 +40,14 @@ Post.findById(req.params.postID)
   .catch(err => next(err));
 });
 
-commentRouter.get('api/postId/:postId/comment', function(req, res, next) {
+commentRouter.get('api/postId/:postId/comment', bearerAuth, function(req, res, next) {
   debug('GET: api/postId/:postId/comment');
   comment.findById(req.params.postid)
     .then(list => res.json(list))
     .catch(next);
 });
 
-commentRouter.put('api/postId/:postId/comment', jsonParser, function(req, res, next){
+commentRouter.put('api/postId/:postId/comment', bearerAuth, function(req, res, next){
   comment.findById(req.params.id)
   .then(comment => {
     comment = req.body;
@@ -57,11 +57,11 @@ commentRouter.put('api/postId/:postId/comment', jsonParser, function(req, res, n
 });
 
 
-commentRouter.del('api/postId/:postId/comment', function(req, res, next) {
+commentRouter.del('api/postId/:postId/comment',  bearerAuth,function(req, res, next) {
   comment.findByIdAndAddComment(req.params.postId, req.body)
   var params = {
-    Bucket: 'decor8',
-    Key: 's3data.Key'
+    image: 'decor8',
+    image: 's3data.Key'
   }
   s3.deleteObject(params)
 });

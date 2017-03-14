@@ -10,13 +10,18 @@ process.env.MONGODB_URI = 'mongodb://localhost/decor8';
 require('../server.js');
 
 const url = `http://localhost:${PORT}`;
+
 const exampleComment = {
-  message: 'love this',
+  userId: '09123913',
+  postId: 'sdadas232',
+  message: 'sugey,brian,cayla,jermiah',
+  imgURI: `${__dirname}/test/data/tester.png`
 };
 
-describe('comment', function() {
-  describe('POST: api/post/:postId/comment', function() {
-    describe('with a valid comment', function() {
+
+describe('comment route', ()=> {
+  describe('POST: api/post/:postId/comment', ()=> {
+    describe('with a valid body', ()=> {
       after(done => {
         if (this.tempComment) {
           Comment.remove({})
@@ -27,16 +32,17 @@ describe('comment', function() {
         done();
       });
 
-      // it('should return a body', done => {
-      //   request.post(`${url}api/post/:postId/comment`)
-      //     .send(exampleComment)
-      //     .end((err, res) => {
-      //       if (err) return done(err);
-      //       expect(res.status).to.equal(200);
-      //       this.tempComment = res.body;
-      //       done();
-      //     });
-      // });
+      it('should return a comment', done => {
+        request.post(`POST: api/post/:postId/comment`)
+          .send(exampleComment)
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.status).to.equal(200);
+            this.tempcomment = res.body;
+            done();
+          });
+      });
+
       // it('should ', done => {
       //   request.post(`${url}/api/comment`)
       //     .send(exampleComment)
