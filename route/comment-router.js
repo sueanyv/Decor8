@@ -12,7 +12,7 @@ const authRouter = module.exports = Router();
 
 commentRouter.post('api/postId/:postId/comment', jsonParser, function(req, res, next) {
   debug('api/post/:postId/comment');
-  console.log(api/post/:postId/comment);
+  console.log(api / post /: postId / comment);
   Post.findByIdAndAddComment(req.params.postId, req.body)
     .then(comment =>
       res.json(comment))
@@ -20,11 +20,11 @@ commentRouter.post('api/postId/:postId/comment', jsonParser, function(req, res, 
       console.log('catch statement running');
       return next(createError(400, 'bad request error'));
     });
-  });
+});
 
-  Post.findById(req.params.postID)
-  .then( () => s3uploadProm(params))
-  .then( s3data => {
+Post.findById(req.params.postID)
+  .then(() => s3uploadProm(params))
+  .then(s3data => {
     del([`${dataDir}/*`]);
     let commentData = {
       message: req.body.message,
@@ -36,13 +36,27 @@ commentRouter.post('api/postId/:postId/comment', jsonParser, function(req, res, 
     return new comment(commentData).save();
     console.log(commentData);
   })
-  .then( comment => res.json(comment))
-  .catch( err => next(err));
+  .then(comment => res.json(comment))
+  .catch(err => next(err));
 });
 
-commentRouter.get('api/postId/:postId/comment',  function(req, res, next) {
+commentRouter.get('api/postId/:postId/comment', function(req, res, next) {
   debug('GET: api/postId/:postId/comment');
-comment.findById(req.params.postid)
-  .then(list => res.json(list))
-  .catch(next);
+  comment.findById(req.params.postid)
+    .then(list => res.json(list))
+    .catch(next);
+});
+
+commentRouter.put('api/postId/:postId/comment', jsonParser, function(req, res, next){
+  comment.findById(req.params.id)
+  
+
+
+commentRouter.del('api/postId/:postId/comment', function(req, res, next) {
+  comment.findByIdAndAddComment(req.params.postId, req.body)
+  var params = {
+    Bucket: 'decor8',
+    Key: 's3data.Key'
+  }
+  s3.deleteObject(params)
 });
