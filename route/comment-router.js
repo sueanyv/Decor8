@@ -1,4 +1,3 @@
-
 'use strict';
 
 const jsonParser = require('body-parser').json();
@@ -11,13 +10,32 @@ const Post = require('../model/post.js');
 
 const authRouter = module.exports = Router();
 
-commentRouter.post('/api/comment', jsonParser, function(req, res, next) {
-  debug('POST /api/comment');
-  new comment(req.body).save()
+commentRouter.post('api/postId/:postId/comment', jsonParser, function(req, res, next) {
+  debug('api/post/:postId/comment');
+  console.log(api/post/:postId/comment);
+  Post.findByIdAndAddComment(req.params.postId, req.body)
     .then(comment =>
       res.json(comment))
     .catch(() => {
       console.log('catch statement running');
-      return next(errorHandler(400, 'bad request error'));
+      return next(createError(400, 'bad request error'));
     });
   });
+
+  Post.findById(req.params.postID)
+  .then( () => s3uploadProm(params))
+  .then( s3data => {
+    del([`${dataDir}/*`]);
+    let commentData = {
+      message: req.body.message,
+      objectKey: s3data.Key,
+      imageURI: s3data.Location,
+      userID: req.user._id,
+      postID: req.params.postID
+    }
+    return new comment(commentData).save();
+    console.log(commentData);
+  })
+  .then( comment => res.json(comment))
+  .catch( err => next(err));
+});
