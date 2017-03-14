@@ -11,15 +11,26 @@ require('../server.js');
 
 const url = `http://localhost:${PORT}`;
 
+onst examplePost ={ //eslint-disable-line
+  name: 'example post name',
+  desc: 'example post desc',
+  imageURI: 'example image uri',
+  objectKey: 'example image key',
+};
+
+const exampleUser = {
+  username: 'Cayla Zabel',
+  password: 'isacodeboss',
+  email: 'example@email.com'
+};
+
 const exampleComment = {
-  userId: '09123913',
-  postId: 'sdadas232',
+
   message: 'sugey,brian,cayla,jermiah',
   imgURI: `${__dirname}/test/data/tester.png`
 };
 
 
-describe('comment route', ()=> {
   describe('POST: api/post/:postId/comment', ()=> {
     describe('with a valid body', ()=> {
       after(done => {
