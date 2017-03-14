@@ -5,16 +5,14 @@ const debug = require('debug')('cfgram:auth-router');
 const Router = require('express').Router;
 const del = require('del');
 const basicAuth = require('../lib/basic-auth-middleware.js');
+const Comment = require('../model/comment.js');
 
-const User = require('../model/user.js');
-const Post = require('../model/post.js');
 
 const authRouter = module.exports = Router();
 
-commentRouter.post('/api/postId/:postId/comment', jsonParser, bearerAuth, function(req, res, next) {
+commentRouter.post('/api/postId/:postId/comment', bearerAuth, jsonParser,  function(req, res, next) {
   debug('/api/post/:postId/comment');
-  console.log(api / post /: postId / comment);
-  Post.findByIdAndAddComment(req.params.postId, req.body,req.userId)
+  Post.findByIdAndAddComment(req.params.postId, req.body, req.userId)
     .then(comment =>
       res.json(comment))
     .catch(() => {
@@ -42,13 +40,13 @@ Post.findById(req.params.postID)
 
 commentRouter.get('/api/comment/:commentId', bearerAuth, function(req, res, next) {
   debug('GET: api/postId/:postId/comment');
-  comment.findById(req.params.postid)
+  Comment.findById(req.params.postid)
     .then(list => res.json(list))
     .catch(next);
 });
 
 commentRouter.put('/api/postId/comment:commentId', bearerAuth, function(req, res, next){
-  comment.findById(req.params.id)
+  Comment.findById(req.params.id)
   .then(comment => {
     comment = req.body;
     res.json(comment);
@@ -58,7 +56,7 @@ commentRouter.put('/api/postId/comment:commentId', bearerAuth, function(req, res
 
 
 commentRouter.delete('/api/postId/comment:commentId',  bearerAuth,function(req, res, next) {
-  comment.findByIdAndAddComment(req.params.postId, req.body)
+  Comment.findByIdAndAddRemove(req.params.commentId, req.body)
   var params = {
     image: 'decor8',
     image: 's3data.Key'

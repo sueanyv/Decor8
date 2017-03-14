@@ -36,7 +36,7 @@ const exampleUser = {
 
 const exampleComment = {
   message: 'sugey,brian,cayla,jermiah',
-  imgURI: `${__dirname}/test/data/tester.png`
+  image: `${__dirname}/test/data/tester.png`
 };
 
 describe('Comment Routes', function(){
@@ -73,7 +73,7 @@ describe('Comment Routes', function(){
       });
 
       it('should return a comment', done => {
-        request.post('api/post/:postId/comment')
+        request.post(`${url}/api/post/:postId/comment`)
         .send(exampleComment)
         .set({
           Authorization: `Bearer ${this.tempToken}`
