@@ -33,7 +33,7 @@ categoryRouter.get('/api/category/:id', bearerAuth, function(req, res, next){
 categoryRouter.put('/api/category/:id', bearerAuth, jsonParser, function(req, res, next){
   debug('Put /api/category/:id');
   if(!req.body.categoryType && !req.body.name) return next(createError(400, 'expected an update.'));
-  Category.findByIdAndUpdate(req.params.id, res.body, {new:true})
+  Category.findByIdAndUpdate(req.params.id, res.body, {new: true})
   .then(category => res.json(category))
   .catch(next);
 });

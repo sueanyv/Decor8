@@ -134,7 +134,7 @@ describe('Category Routes', function(){
     });
   });
   describe('Get api/category/:id', function(){
-    describe('with a valid body', function(){
+    describe('with a valid id', function(){
       before(done => {
         new Category(exampleCategory).save()
         .then(category => {
@@ -167,6 +167,111 @@ describe('Category Routes', function(){
           expect(res.status).to.equal(200);
           expect(res.body.categoryType).to.equal(exampleCategory.categoryType);
           expect(res.body.desc).to.equal(exampleCategory.desc);
+          done();
+        });
+      });
+    });
+    describe('with an invalid id', function(){
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategoryId = category._id;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return a category', done => {
+        request.get(`${url}/api/category/badid`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+    describe('with out a token', function(){
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategoryId = category._id;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return a category', done => {
+        request.get(`${url}/api/category/${this.tempCategoryId}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
+  describe('PUT /api/category/:id', function(){
+    describe('With a valid body, id, and token', function(){
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategoryId = category._id;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return an update Category', done => {
+        request.put(`${url}/api/category/${this.tempCategoryId}`)
+        .send({categoryType: 'new category type', desc: 'new category desc'})
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.categoryType).to.equal('new category type');
+          expect(res.body.desc).to.equal('new category desc');
           done();
         });
       });
