@@ -1,9 +1,19 @@
 'use strict';
 
-const expect = require('chai').expect;
+require('./lib/test-env.js');
+const expect = require('chai')
 const request = require('superagent');
-const comment = require('../model/comment.js');
+const awsMocks = require('./lib/aws-mocks.js'); //eslint-disable-line
+const mongoose = require('mongoose');
+const Promise = require('bluebird');
+const serverToggle = require('./lib/server-toggle.js');
+const server = require('../server.js');
+
 const PORT = process.env.PORT || 3000;
+
+const Comment = require('../model/comment.js');
+const User = require('../model/user.js');
+const Post = require('../model/post.js');
 
 process.env.MONGODB_URI = 'mongodb://localhost/decor8';
 
@@ -11,7 +21,7 @@ require('../server.js');
 
 const url = `http://localhost:${PORT}`;
 
-onst examplePost ={ //eslint-disable-line
+const examplePost ={
   name: 'example post name',
   desc: 'example post desc',
   imageURI: 'example image uri',
@@ -25,12 +35,26 @@ const exampleUser = {
 };
 
 const exampleComment = {
-
   message: 'sugey,brian,cayla,jermiah',
   imgURI: `${__dirname}/test/data/tester.png`
 };
 
-
+describe('Comment Routes', function(){
+  before( done => {
+    serverToggle.serverOn(server, done);
+  });
+  after( done => {
+    serverToggle.serverOff(server, done);
+  });
+  afterEach( done => {
+    Promise.all([
+      User.remove({}),
+      Category.remove({}),
+      Post.remove({})
+    ])
+    .then( () => done())
+    .catch(done);
+  });
   describe('POST: api/post/:postId/comment', ()=> {
     describe('with a valid body', ()=> {
       after(done => {
