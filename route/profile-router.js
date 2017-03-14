@@ -105,7 +105,7 @@ profileRouter.delete('/api/profile/:id', bearerAuth, function(req, res, next){
 
   Profile.findByIdAndRemove(req.params.id)
   .then(() => {
-    s3.deleteObjectProm(params)
+    s3.deleteObjectProm(params);
   })
   .then(() => res.sendStatus(204))
   .catch(next);
