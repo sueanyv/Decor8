@@ -49,7 +49,11 @@ commentRouter.get('api/postId/:postId/comment', function(req, res, next) {
 
 commentRouter.put('api/postId/:postId/comment', jsonParser, function(req, res, next){
   comment.findById(req.params.id)
-  
+  .then(comment => {
+    comment = req.body;
+    res.json(comment);
+  })
+
 
 
 commentRouter.del('api/postId/:postId/comment', function(req, res, next) {
