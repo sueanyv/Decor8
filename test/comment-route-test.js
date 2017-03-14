@@ -49,33 +49,40 @@ describe('Comment Routes', function(){
   afterEach( done => {
     Promise.all([
       User.remove({}),
-      Category.remove({}),
+      Comment.remove({}),
       Post.remove({})
     ])
     .then( () => done())
     .catch(done);
   });
   describe('POST: api/post/:postId/comment', ()=> {
-    describe('with a valid body', ()=> {
-      after(done => {
-        if (this.tempComment) {
-          Comment.remove({})
-            .then(() => done())
-            .catch(done);
-          return;
-        }
-        done();
+    describe('With a valid body', function(){
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
       });
 
       it('should return a comment', done => {
-        request.post(`POST: api/post/:postId/comment`)
-          .send(exampleComment)
-          .end((err, res) => {
-            if (err) return done(err);
-            expect(res.status).to.equal(200);
-            this.tempcomment = res.body;
-            done();
-          });
+        request.post('api/post/:postId/comment')
+        .send(exampleComment)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          done();
+        });
       });
 
       // it('should ', done => {

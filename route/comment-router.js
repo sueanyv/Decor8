@@ -11,8 +11,8 @@ const Post = require('../model/post.js');
 
 const authRouter = module.exports = Router();
 
-commentRouter.post('api/postId/:postId/comment', jsonParser, bearerAuth, function(req, res, next) {
-  debug('api/post/:postId/comment');
+commentRouter.post('/api/postId/:postId/comment', jsonParser, bearerAuth, function(req, res, next) {
+  debug('/api/post/:postId/comment');
   console.log(api / post /: postId / comment);
   Post.findByIdAndAddComment(req.params.postId, req.body,req.userId)
     .then(comment =>
@@ -40,14 +40,14 @@ Post.findById(req.params.postID)
   .catch(err => next(err));
 });
 
-commentRouter.get('api/postId/:postId/comment', bearerAuth, function(req, res, next) {
+commentRouter.get('/api/comment/:commentId', bearerAuth, function(req, res, next) {
   debug('GET: api/postId/:postId/comment');
   comment.findById(req.params.postid)
     .then(list => res.json(list))
     .catch(next);
 });
 
-commentRouter.put('api/postId/:postId/comment', bearerAuth, function(req, res, next){
+commentRouter.put('/api/postId/comment:commentId', bearerAuth, function(req, res, next){
   comment.findById(req.params.id)
   .then(comment => {
     comment = req.body;
@@ -57,7 +57,7 @@ commentRouter.put('api/postId/:postId/comment', bearerAuth, function(req, res, n
 });
 
 
-commentRouter.del('api/postId/:postId/comment',  bearerAuth,function(req, res, next) {
+commentRouter.delete('/api/postId/comment:commentId',  bearerAuth,function(req, res, next) {
   comment.findByIdAndAddComment(req.params.postId, req.body)
   var params = {
     image: 'decor8',
