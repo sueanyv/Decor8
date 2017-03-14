@@ -53,7 +53,8 @@ commentRouter.put('api/postId/:postId/comment', jsonParser, function(req, res, n
     comment = req.body;
     res.json(comment);
   })
-
+  .catch(next);
+});
 
 
 commentRouter.del('api/postId/:postId/comment', function(req, res, next) {
