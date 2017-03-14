@@ -11,6 +11,7 @@ const Comment = require('./comment.js');
 const postSchema = Schema({
   name: { type: String, required: true },
   desc: { type: String, required: true },
+  price: { type: Number, required: true },
   userID: { type: Schema.Types.ObjectId, required: true },
   categoryID: { type: Schema.Types.ObjectId, required: true },
   comments: [{ type: Schema.Types.ObjectId, ref: 'comment' }],
