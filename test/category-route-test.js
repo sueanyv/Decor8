@@ -74,7 +74,6 @@ describe('Category Routes', function(){
           Authorization: `Bearer ${this.tempToken}`
         })
         .end((err, res) => {
-          console.log('category', res.body);
           if(err) return done(err);
           expect(res.status).to.equal(200);
           expect(res.body.categoryType).to.equal(exampleCategory.categoryType);

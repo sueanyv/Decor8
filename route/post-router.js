@@ -36,7 +36,6 @@ function s3uploadProm(params) {
 
 postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload.single('image'), function(req, res, next) {
   debug('post /api/category/:categoryID/post');
-  console.log('req body in post route', req.body);
 
   if(!req.body.name || !req.body.desc){
     return next(createError(400, 'missing required values'));
@@ -53,9 +52,6 @@ postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload
   Category.findById(req.params.categoryID)
   .then( () => s3uploadProm(params))
   .then( s3data => {
-
-    // console.log('got the s3 data', s3data);
-    // console.log('req.body.price', req.body.price);
     del([`${dataDir}/*`]);
     let postData = {
       name: req.body.name,
@@ -66,8 +62,8 @@ postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload
       userID: req.user._id,
       categoryID:req.params.categoryID
     };
-    return new Post(postData).save();
-    // return Category.findByIdAndAddPost(req.params.categoryID, postData).save();
+    // return new Post(postData).save();
+    return Category.findByIdAndAddPost(req.params.categoryID, postData);
   })
   .then( post => res.json(post))
   .catch(err => next(err));
@@ -105,8 +101,10 @@ postRouter.put('/api/post/:id', bearerAuth, jsonParser, function(req, res, next)
   .catch(next);
 });
 
-postRouter.delete('/api/category/categoryID/post/:id', bearerAuth, function(req, res, next){
-  debug('DELETE: /api/category/categoryID/post/:id');
+postRouter.delete('/api/category/:categoryID/post/:id', bearerAuth, function(req, res, next){
+  debug('DELETE: /api/category/:categoryID/post/:id');
+
+  Category.findByIdAndRemovePost(req.params.categoryID, req.params.id);
 
   Post.findByIdAndRemove(req.params.id)
   .then(post => {
