@@ -36,6 +36,8 @@ function s3uploadProm(params) {
 commentRouter.post('/api/post/:postId/comment', bearerAuth, upload.single('image'), jsonParser,  function(req, res, next) {
   debug('/api/post/:postId/comment');
 
+  if(!req.body.message) return next(createError(400, 'expected a message'));
+
   let ext = path.extname(req.file.originalname);
 
   let params = {
@@ -65,28 +67,34 @@ Post.findById(req.params.postId)
   .catch(err => next(err));
 });
 
-commentRouter.get('/api/comment/:commentId', bearerAuth, function(req, res, next) {
-  debug('GET: api/postId/:postId/comment');
-  Comment.findById(req.params.postId)
-    .then(list => res.json(list))
+commentRouter.get('/api/comment/:id', bearerAuth, function(req, res, next) {
+  debug('GET: api/comment/:id');
+
+  Comment.findById(req.params.id)
+    .then(comment => {
+      if ( comment.userId.toString() !== req.user._id.toString()){
+        return next(createError(401, 'invalid user'));
+
+    }
+      res.json(comment);
+    })
     .catch(next);
 });
 
-commentRouter.put('/api/postId/comment:commentId', bearerAuth, function(req, res, next){
-  Comment.findByIdAndUpdate(req.params.id)
-  .then(comment => {
-    comment = req.body;
+commentRouter.put('/api/comment/:id', bearerAuth, jsonParser, function(req, res, next){
+  Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  .then( comment => {
     res.json(comment);
   })
   .catch(next);
 });
 
 
-commentRouter.delete('/api/postId/comment:commentId',  bearerAuth,function(req, res, next) {
-  Comment.findByIdAndAddRemove(req.params.commentId, req.body)
-  var params = {
-    image: 'decor8',
-    image: 's3data.Key'
-  }
+commentRouter.delete('/api/post/postId/comment/:id', bearerAuth, function(req, res, next) {
+  Comment.findByIdAndRemove(req.params.id)
+  .then( profile => {
+    if(!profile) return next(createError(404, 'post not found'));
+    res.sendStatus(204);
+  })
   .catch(next);
 });
