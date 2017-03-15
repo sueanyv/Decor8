@@ -11,7 +11,7 @@ const categorySchema = Schema({
   categoryType: {type:String, required: true},
   created: {type:Date, default: Date.now},
   desc: {type:String, required:true},
-  postList: [{type: Schema.Types.ObjectId, ref: 'post' }]
+  posts: [{type: Schema.Types.ObjectId, ref: 'post' }]
 });
 
 const Category = module.exports = mongoose.model('category', categorySchema);
@@ -22,12 +22,11 @@ Category.findByIdAndAddPost = function(id, post){
   return Category.findById()
   .catch(err => Promise.reject(createError(404, err.message)))
   .then(category => {
-    post.categoryID = category._id;
     this.tempCategory = category;
     return new Post(post).save();
   })
   .then(post => {
-    this.tempCategory.postList.push(post._id);
+    this.tempCategory.posts.push(post._id);
     this.tempPost = post;
     return this.tempCategory.save();
   })

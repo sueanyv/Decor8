@@ -9,23 +9,20 @@ const awsMocks = require('./lib/aws-mocks.js'); //eslint-disable-line
 const serverToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
 
-const PORT = process.env.PORT || 3000;
 
 const Comment = require('../model/comment.js');
 const User = require('../model/user.js');
 const Post = require('../model/post.js');
 const Category = require('../model/category.js');
 
-process.env.MONGODB_URI = 'mongodb://localhost/decor8';
-
-
-const url = `http://localhost:${PORT}`;
+const url = `http://localhost:${process.env.PORT}`;
 
 const examplePost ={
   name: 'example post name',
   desc: 'example post desc',
-  imageURI: 'example image uri',
-  objectKey: 'example image key',
+  imageURI: `${__dirname}/data/tester.png`,
+  price:5,
+  objectKey: 'example image key'
 };
 
 const exampleCategory = {
@@ -48,9 +45,10 @@ describe('Comment Routes', function(){
   before( done => {
     serverToggle.serverOn(server, done);
   });
-  // after( done => {
-  //   serverToggle.serverOff(server, done);
-  // });
+  after( done => {
+    serverToggle.serverOff(server, done);
+  });
+
   afterEach( done => {
     Promise.all([
       User.remove({}),
@@ -85,13 +83,14 @@ describe('Comment Routes', function(){
         }).catch(done);
       });
       before(done => {
-        examplePost.userID = this.tempUser._id;
         examplePost.categoryID = this.tempCategory._id;
+        examplePost.userID = this.tempUser._id;
         new Post(examplePost).save()
         .then(post=>{
           this.tempPost = post;
           exampleComment.userId = this.tempUser._id;
-          exampleComment.postId = post._id;
+          exampleComment.postId = this.tempPost._id;
+
           done();
         }).catch(done);
       })
@@ -105,17 +104,21 @@ describe('Comment Routes', function(){
 
       it('should return a comment', done => {
         console.log('in it in post test comments')
-        request.post(`${url}/api/post/${this.tempPost._id}/comment`)
+        request.post(`http://localhost:${process.env.PORT}/api/post/${this.tempPost._id}/comment`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
-        .field('message', exampleComment.message)
-        .field('userId', exampleComment.userId)
-        .field('postId', exampleComment.postId)
+        .field('message', 'sugey,brian,cayla,jermiah' )
+        .field('postId', exampleComment.postId.toString())
+        .field('userId', exampleComment.userId.toString())
         .attach('image', exampleComment.image)
         .end((err, res) => {
           if(err) return done(err);
+          console.log('*****');
           expect(res.status).to.equal(200);
+          expect(res.body.message).to.equal(exampleComment.message)
+          // expect(res.body.imageURI).to.equal(awsMock.uploadMock)
+          expect(res.body.postId).to.equal(this.tempPost._id.toString());
           done();
         });
       });

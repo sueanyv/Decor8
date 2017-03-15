@@ -9,7 +9,7 @@ const commentSchema = Schema({
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
   objectKey: { type: String, required: true, unique: true },
-  imgURI: { type: String, required: true }
+  imageURI: { type: String, required: true }
 });
 
 module.exports = mongoose.model('comment', commentSchema);
