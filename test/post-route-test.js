@@ -94,7 +94,7 @@ describe('Post Routes', function() {
         .end((err, res) => {
 
           Category.findById(this.tempCategory._id)
-          .then(category => {
+          .then(() => {
           })
           .catch(done);
           if (err) return done(err);

@@ -23,6 +23,7 @@ const exampleCategory = {
 const examplePost ={ //eslint-disable-line
   name: 'example post name',
   desc: 'example post desc',
+  price: 4,
   imageURI: 'example image uri',
   objectKey: 'example image key',
 };
@@ -138,7 +139,7 @@ describe('Category Routes', function(){
       before(done => {
         new Category(exampleCategory).save()
         .then(category => {
-          this.tempCategoryId = category._id;
+          this.tempCategory = category;
           done();
         })
         .catch(done);
@@ -157,8 +158,20 @@ describe('Category Routes', function(){
         })
         .catch(done);
       });
+      before(done => {
+        examplePost.userID = this.tempUser._id;
+        examplePost.categoryID = this.tempCategory._id;
+        new Post(examplePost).save()
+        .then(post => {
+          this.examplePost = post;
+          this.tempCategory.posts.push(this.examplePost._id);
+          return Category.findByIdAndUpdate(this.tempCategory._id, this.tempCategory, {new:true});
+        })
+        .then(()=> done())
+        .catch(done);
+      });
       it('should return a category', done => {
-        request.get(`${url}/api/category/${this.tempCategoryId}`)
+        request.get(`${url}/api/category/${this.tempCategory._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
@@ -167,6 +180,8 @@ describe('Category Routes', function(){
           expect(res.status).to.equal(200);
           expect(res.body.categoryType).to.equal(exampleCategory.categoryType);
           expect(res.body.desc).to.equal(exampleCategory.desc);
+          expect(res.body.posts.length).to.equal(1);
+          expect(res.body.posts[0]).to.be.a('object');
           done();
         });
       });

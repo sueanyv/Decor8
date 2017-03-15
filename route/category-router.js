@@ -26,6 +26,7 @@ categoryRouter.get('/api/category/:id', bearerAuth, function(req, res, next){
   debug('Get /api/category/:id');
 
   Category.findById(req.params.id)
+  .populate('posts')
   .then(category => res.json(category))
   .catch(next);
 });

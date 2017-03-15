@@ -10,7 +10,6 @@ const del = require('del');
 const AWS = require('aws-sdk');
 const multer = require('multer');
 
-const User = require('../model/user.js');
 const Post = require('../model/post.js');
 const Category = require('../model/category.js');
 const bearerAuth = require('../lib/bearer-auth-middleware.js');
