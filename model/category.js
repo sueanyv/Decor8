@@ -19,7 +19,7 @@ const Category = module.exports = mongoose.model('category', categorySchema);
 Category.findByIdAndAddPost = function(id, post){
   debug('findByIdAndAddPost');
 
-  return Category.findById()
+  return Category.findById(id)
   .catch(err => Promise.reject(createError(404, err.message)))
   .then(category => {
     this.tempCategory = category;
@@ -37,15 +37,14 @@ Category.findByIdAndAddPost = function(id, post){
 
 Category.findByIdAndRemovePost = function(id, postId){
   debug('findByIdAndAddPost');
-
   Category.findById(id)
   .then(category => {
-    for(var i = 0; i < category.postList.length; i++){
-      if(category.postList[i] === postId){
-        category.postList.splice(i, 1);
+    for(var i = 0; i < category.posts.length; i++){
+      if(category.posts[i] == postId){
+        category.posts.splice(i, 1);
       }
     }
-    Category.findByIdandUpdate(id, category)
+    Category.findByIdAndUpdate(id, category, {new: true})
     .then(() => {
       return;
     })

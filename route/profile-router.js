@@ -99,16 +99,9 @@ profileRouter.put('/api/profile/:id', bearerAuth, jsonParser, function(req, res,
 profileRouter.delete('/api/profile/:id', bearerAuth, function(req, res, next){
   debug('DELETE: /api/profile/:id');
 
-  // let ext = path.extname(req.file.originalname);
-  //
-  // let params = {
-  //   Bucket: process.env.AWS_BUCKET,
-  //   Key: `${req.file.filename}${ext}`
-  // };
-
   Profile.findByIdAndRemove(req.params.id)
   .then( profile => {
-    if(!profile) return next(createError(404, 'post not found'));
+    if(!profile) return next(createError(404, 'profile not found'));
     res.sendStatus(204);
   })
   .catch(next);

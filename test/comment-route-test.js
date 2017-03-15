@@ -361,8 +361,20 @@ describe('Comment Routes', () => {
           });
       });
     });
-    describe('Delete /api/post/postId/comment/:id', function(){
-      describe('With a valid id', function(){
+    describe('Delete /api/post/postId/comment/:id', () =>{
+      describe('With a valid id', () =>{
+        before(done => {
+          exampleComment.objectKey = 'stuff';
+          exampleComment.imageURI = 'stuff';
+          exampleComment.userId = this.tempUser._id;
+          exampleComment.postId = this.tempPost._id;
+          new Comment(exampleComment).save()
+            .then(comment => {
+              this.tempComment = comment;
+              done();
+            }).catch(done);
+        });
+
         before ( done => {
           // examplePost.userID = this.tempUser._id;
           new Post(examplePost).save()
@@ -395,11 +407,17 @@ describe('Comment Routes', () => {
             .catch(done);
         });
         it('should return a 204', done => {
-          request.delete(`${url}/api/post/postId/comment/${this.tempComment._id}`)
+          request.delete(`${url}/api/post/${this.tempPost._id}/comment/${this.tempComment._id}`)
             .set({
               Authorization: `Bearer ${this.tempToken}`
             })
             .end((err, res) => {
+
+              Post.findById(this.tempPost._id)
+              .then(() => {
+                return;
+              })
+              .catch(done);
               if(err) return done(err);
               expect(res.status).to.equal(204);
               done();

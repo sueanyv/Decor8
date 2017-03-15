@@ -90,10 +90,12 @@ commentRouter.put('/api/comment/:id', bearerAuth, jsonParser, function(req, res,
 });
 
 
-commentRouter.delete('/api/post/postId/comment/:id', bearerAuth, function(req, res, next) {
-  Comment.findByIdAndRemove(req.params.id)
-  .then( profile => {
-    if(!profile) return next(createError(404, 'post not found'));
+commentRouter.delete('/api/post/:postId/comment/:id', bearerAuth, function(req, res, next) {
+    Post.findByIdAndRemoveComment(req.params.postId, req.params.id);
+
+    Comment.findByIdAndRemove(req.params.id)
+  .then( comment => {
+    if(!comment) return next(createError(404, 'comment not found'));
     res.sendStatus(204);
   })
   .catch(next);
