@@ -27,7 +27,6 @@ Post.findByIdAndAddComment = function(id, comment) {
   return Post.findById(id)
   .catch( err => Promise.reject(createError(404, err.message)))
   .then( post => {
-    comment.postID = post._id;
     this.tempPost = post;
     return new Comment(comment).save();
   })

@@ -12,6 +12,7 @@ const profileRouter = require('./route/profile-router.js');
 const categoryRouter = require('./route/category-router.js');
 const authRouter = require('./route/basic-auth-router.js');
 const errors = require('./lib/error-middleware.js');
+const commentRouter = require('./route/comment-router.js');
 
 dotenv.load();
 
@@ -24,6 +25,7 @@ let morganFormat = process.env.PRODUCTION ? 'common' : 'dev';
 
 app.use(cors());
 app.use(morgan(morganFormat));
+app.use(commentRouter);
 app.use(profileRouter);
 app.use(categoryRouter);
 app.use(authRouter);
