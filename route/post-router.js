@@ -67,7 +67,7 @@ postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload
       categoryID:req.params.categoryID
     };
     return new Post(postData).save();
-    // return Category.findByIdAndAddPost(req.params.categoryID, postData);
+    // return Category.findByIdAndAddPost(req.params.categoryID, postData).save();
   })
   .then( post => res.json(post))
   .catch(err => next(err));
@@ -95,7 +95,7 @@ postRouter.put('/api/post/:id', bearerAuth, jsonParser, function(req, res, next)
   if(!req.body.desc) return next(createError(400, 'description required'));
 
 
-  Post.findByIdAndUpdate(req.params.id, res.body, { new: true })
+  Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
   .then( post => {
     if ( !post){
       return next(createError(404, 'post not found'));
