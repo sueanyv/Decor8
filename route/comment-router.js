@@ -46,9 +46,9 @@ commentRouter.post('/api/post/:postId/comment', bearerAuth, upload.single('image
     Key: `${req.file.filename}${ext}`,
     Body: fs.createReadStream(req.file.path)
   };
-console.log('postId',req.params.postId)
-console.log('body', req.body)
-Post.findById(req.params.postId)
+  console.log('postId',req.params.postId);
+  console.log('body', req.body);
+  Post.findById(req.params.postId)
   .then(() => s3uploadProm(params))
   .then(s3data => {
     del([`${dataDir}/*`]);
@@ -60,8 +60,8 @@ Post.findById(req.params.postId)
       postId: req.params.postId
     };
     // return new comment(commentData).save(console.log(error ()));
-    console.log('before find by id and add comment')
-   return Post.findByIdAndAddComment(req.params.postId, commentData);
+    console.log('before find by id and add comment');
+    return Post.findByIdAndAddComment(req.params.postId, commentData);
   })
   .then(comment => res.json(comment))
   .catch(err => next(err));
@@ -71,14 +71,14 @@ commentRouter.get('/api/comment/:id', bearerAuth, function(req, res, next) {
   debug('GET: api/comment/:id');
 
   Comment.findById(req.params.id)
-    .then(comment => {
-      if ( comment.userId.toString() !== req.user._id.toString()){
-        return next(createError(401, 'invalid user'));
+  .then(comment => {
+    if ( comment.userId.toString() !== req.user._id.toString()){
+      return next(createError(401, 'invalid user'));
 
     }
-      res.json(comment);
-    })
-    .catch(next);
+    res.json(comment);
+  })
+  .catch(next);
 });
 
 commentRouter.put('/api/comment/:id', bearerAuth, jsonParser, function(req, res, next){
@@ -92,9 +92,9 @@ commentRouter.put('/api/comment/:id', bearerAuth, jsonParser, function(req, res,
 
 
 commentRouter.delete('/api/post/:postId/comment/:id', bearerAuth, function(req, res, next) {
-    Post.findByIdAndRemoveComment(req.params.postId, req.params.id);
+  Post.findByIdAndRemoveComment(req.params.postId, req.params.id);
 
-    Comment.findByIdAndRemove(req.params.id)
+  Comment.findByIdAndRemove(req.params.id)
   .then( comment => {
     if(!comment) return next(createError(404, 'comment not found'));
     res.sendStatus(204);
