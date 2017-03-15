@@ -3,7 +3,6 @@
 require('./lib/test-env.js');
 const expect = require('chai').expect;
 const request = require('superagent');
-const awsMocks = require('./lib/aws-mocks.js');
 const serverToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
 
@@ -208,13 +207,6 @@ describe('Comment Routes', () => {
       }).catch(done);
     });
 
-    // after(done => {
-    //   delete examplePost.userID;
-    //   delete examplePost.categoryID;
-    //   delete exampleComment.userId;
-    //   delete exampleComment.postId
-    //   done();
-    // })
     it('should return a comment', done => {
       request.get(`${url}/api/comment/${this.tempComment._id}`)
       .set({

@@ -61,7 +61,6 @@ postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload
       userID: req.user._id,
       categoryID:req.params.categoryID
     };
-    // return new Post(postData).save();
     return Category.findByIdAndAddPost(req.params.categoryID, postData);
   })
   .then( post => res.json(post))
