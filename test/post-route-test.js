@@ -92,6 +92,11 @@ describe('Post Routes', function() {
         .field('price', examplePost.price)
         .attach('image', examplePost.image)
         .end((err, res) => {
+
+          Category.findById(this.tempCategory._id)
+          .then(() => {
+          })
+          .catch(done);
           if (err) return done(err);
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(examplePost.name);
@@ -169,14 +174,12 @@ describe('Post Routes', function() {
       .catch(done);
     });
     before ( done => {
-      console.log('before hit');
       examplePost.userID = this.tempUser._id;
       examplePost.imageURI = 'stuff';
       examplePost.objectKey = 'stuff';
       examplePost.categoryID = this.tempCategory._id;
       new Post(examplePost).save()
       .then( post => {
-        console.log('in then block');
         this.tempPost = post;
         done();
       })
@@ -189,7 +192,6 @@ describe('Post Routes', function() {
     });
 
     it('should return a post', done => {
-      console.log('get test test' );
       request.get(`${url}/api/post/${this.tempPost._id}`)
       .set({
         Authorization: `Bearer ${this.tempToken}`
@@ -313,7 +315,7 @@ describe('Post Routes', function() {
     });
   });
 
-  describe('Delete /api/category/categoryID/post/:id', function(){
+  describe('Delete /api/category/:categoryID/post/:id', function(){
     describe('With a valid id', function(){
       before ( done => {
         // examplePost.userID = this.tempUser._id;
@@ -341,17 +343,28 @@ describe('Post Routes', function() {
       before(done => {
         new Category(exampleCategory).save()
           .then(category => {
-            this.tempCategoryId = category._id;
+            this.tempCategory = category;
+            category.posts.push(this.tempPost._id);
+            Category.findByIdAndUpdate(category._id, category, {new:true})
+            .then(() => {
+              return;
+            }).
+            catch(done);
             done();
           })
           .catch(done);
       });
       it('should return a 204', done => {
-        request.delete(`${url}/api/category/categoryID/post/${this.tempPost._id}`)
+        request.delete(`${url}/api/category/${this.tempCategory._id}/post/${this.tempPost._id}`)
           .set({
             Authorization: `Bearer ${this.tempToken}`
           })
           .end((err, res) => {
+            Category.findById(this.tempCategory._id)
+            .then(() => {
+              return;
+            })
+            .catch(done);
             if(err) return done(err);
             expect(res.status).to.equal(204);
             done();
