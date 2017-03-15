@@ -320,12 +320,55 @@ describe('Comment Routes', () => {
       });
     });
       describe('with an invalid body', () => {
+        before(done => {
+          new User(exampleUser)
+            .generatePasswordHash(exampleUser.password)
+            .then(user => user.save())
+            .then(user => {
+              this.tempUser = user;
+              return user.generateToken();
+            })
+            .then(token => {
+              this.tempToken = token;
+              done();
+            })
+            .catch(done);
+        });
+        before(done => {
+          new Category(exampleCategory).save()
+            .then(category => {
+              this.tempCategory = category;
+              done();
+            }).catch(done);
+        });
+        before(done => {
+          examplePost.categoryID = this.tempCategory._id;
+          examplePost.userID = this.tempUser._id;
+          new Post(examplePost).save()
+            .then(post => {
+              this.tempPost = post;
+              exampleComment.userId = this.tempUser._id;
+              exampleComment.postId = this.tempPost._id;
+
+              done();
+            }).catch(done);
+        });
+        before(done => {
+          exampleComment.objectKey = 'stuff';
+          exampleComment.imageURI = 'stuff';
+          exampleComment.userId = this.tempUser._id;
+          exampleComment.postId = this.tempPost._id;
+          new Comment(exampleComment).save()
+            .then(comment => {
+              this.tempComment = comment;
+              done();
+            }).catch(done);
+        });
         it('should return a 400 error', done => {
           request.put(`${url}/api/comment/${this.tempComment._id}`)
             .set({
               Authorization: `Bearer ${this.tempToken}`
             })
-
             .end((err, res) => {
               expect(res.status).to.equal(400);
               done();

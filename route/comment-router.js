@@ -82,6 +82,7 @@ commentRouter.get('/api/comment/:id', bearerAuth, function(req, res, next) {
 });
 
 commentRouter.put('/api/comment/:id', bearerAuth, jsonParser, function(req, res, next){
+  if(!req.body.message) return next(createError(400, 'expected an message.'));
   Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
   .then( comment => {
     res.json(comment);

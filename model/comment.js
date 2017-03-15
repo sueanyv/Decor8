@@ -12,4 +12,5 @@ const commentSchema = Schema({
   imageURI: { type: String, required: true }
 });
 
+
 module.exports = mongoose.model('comment', commentSchema);
