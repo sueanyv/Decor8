@@ -1,4 +1,4 @@
-#DECOR8
+# DECOR8
 
 [![Coverage Status](https://coveralls.io/repos/github/sueanyv/Decor8/badge.svg?branch=category-model)](https://coveralls.io/github/sueanyv/Decor8?branch=category-model)
 
