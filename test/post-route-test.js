@@ -219,17 +219,144 @@ describe('Post Routes', function() {
     describe('invalid if no token found', () => {
       it('should return a 401 status', done => {
         request.get(`${url}/api/post/badid`)
-      .set({})
-      .end((err, res) => {
-        expect(res.status).to.equal(401);
-        done();
-      });
+        .set({})
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
       });
     });
   });
+  describe('PUT: /api/post/:id', () => {
+    describe('with valid body, id and token', function(){
+      before( done => {
+        new User (exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then( user => user.save())
+        .then( user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then( token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before ( done => {
+        examplePost.userID = this.tempUser._id;
+        new Post(examplePost).save()
+        .then( post => {
+          this.tempPost = post;
+          done();
+        })
+        .catch(done);
+      });
+      it('should return an updated Post', done => {
+        request.put(`${url}/api/post/${this.tempPost._id}`)
+        .send({ name: 'new name',
+          desc: 'new description',
+          price: 11})
+        .set({
+          Authorization: `Bearer ${this.tempToken}`})
+          .end((err, res) => {
+            if(err) return done(err);
+            expect(res.status).to.equal(200);
+            expect(res.body.name).to.equal('new name');
+            expect(res.body.desc).to.equal('new description');
+            expect(res.body.price).to.equal(11);
+            done();
+          });
+      });
+    });
+    describe('with an invalid body', () => {
+      it('should return a 400 error', done => {
+        request.put(`${url}/api/post/${this.tempPost._id}`)
+          .set({
+            Authorization: `Bearer ${this.tempToken}`
+          })
+          .send({ NahName:'blahwrong', DuhDesc:'wrongupdate'})
+          .end((err, res) => {
+            expect(res.status).to.equal(400);
+            done();
+          });
+      });
+    });
+    describe('with an unfound post ID', () => {
+      it('should return a 404', done => {
+        request.put(`${url}/api/post/`)
+          .set({
+            Authorization: `Bearer ${this.tempToken}`
+          })
+          .send({name: 'no dice', desc: 'no luck'})
+          .end((err, res) => {
+            expect(err.message).to.equal('Not Found');
+            expect(res.status).to.equal(404);
+            done();
+          });
+      });
+    });
+  });
+  describe('with an invalid token', () => {
+    it('should return a 401 error', done => {
+      request.put(`${url}/api/post/${this.tempPost._id}`)
+        .set({
+          Authorization: 'Bear claws'
+        })
+        .send({name: 'nope', desc:'nada', price: 1 })
+        .end((err, res) => {
+          expect(err.message).to.equal('Unauthorized');
+          expect(res.status).to.equal(401);
+          done();
 
+        });
+    });
+  });
 
-
+  describe('Delete /api/category/categoryID/post/:id', function(){
+    describe('With a valid id', function(){
+      before ( done => {
+        // examplePost.userID = this.tempUser._id;
+        new Post(examplePost).save()
+          .then( post => {
+            this.tempPost = post;
+            done();
+          })
+          .catch(done);
+      });
+      before(done => {
+        new User(exampleUser)
+          .generatePasswordHash(exampleUser.password)
+          .then(user => user.save())
+          .then(user => {
+            this.tempUser = user;
+            return user.generateToken();
+          })
+          .then(token => {
+            this.tempToken = token;
+            done();
+          })
+          .catch(done);
+      });
+      before(done => {
+        new Category(exampleCategory).save()
+          .then(category => {
+            this.tempCategoryId = category._id;
+            done();
+          })
+          .catch(done);
+      });
+      it('should return a 204', done => {
+        request.delete(`${url}/api/category/categoryID/post/${this.tempPost._id}`)
+          .set({
+            Authorization: `Bearer ${this.tempToken}`
+          })
+          .end((err, res) => {
+            if(err) return done(err);
+            expect(res.status).to.equal(204);
+            done();
+          });
+      });
+    });
+  });
 });
-// });
-// });
