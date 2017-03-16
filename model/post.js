@@ -78,9 +78,7 @@ Post.findByIdAndRemoveComment = function(id, commentId) {
           post.comments.splice(i, 1);
         }
       }
-      Post.findByIdAndUpdate(id, post, {
-          new: true
-        })
+      Post.findByIdAndUpdate(id, post, { new: true })
         .then(() => {
           return;
         })
