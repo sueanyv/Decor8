@@ -77,7 +77,7 @@ Authorization: `Bearer ${yourTokenHere}`
 
 # About The Developers
 
-![Cayla](/images/cayla.jpg){:height="200px" width="200px"}
+<img src="images/cayla.jpg" width="200">
 
 ### Cayla Zabel
 
