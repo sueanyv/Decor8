@@ -87,10 +87,28 @@ commentRouter.put('/api/comment/:id', bearerAuth, jsonParser, function(req, res,
   .catch(next);
 });
 
+commentRouter.put('/api/comment/:id/upvote', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT api/comment/:id/upvote');
+
+  if(!req.body.message) return next(createError(400, 'expected an message.'));
+  Comment.findById(req.params.id)
+  .then( comment => {
+    comment.upVote += 1;
+    comment.message = req.body.message;
+    return Comment.findByIdAndUpdate(req.params.id, comment, { new: true });
+  })
+    .then( comment => {
+      res.json(comment);
+    })
+    .catch(err => console.log(err));
+});
+
+
+
 
 commentRouter.delete('/api/post/:postId/comment/:id', bearerAuth, function(req, res, next) {
   debug('DELETE api/comment/:id');
-  
+
   Post.findByIdAndRemoveComment(req.params.postId, req.params.id);
 
   Comment.findByIdAndRemove(req.params.id)
