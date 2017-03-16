@@ -71,18 +71,18 @@ Post.findByIdAndAddComment = function(id, comment) {
 Post.findByIdAndRemoveComment = function(id, commentId) {
   debug('findByIdAndAddComment');
   Post.findById(id)
-    .then(post => {
-      for (var i = 0; i < post.comments.length; i++) {
-        if (post.comments[i] == commentId) {
-          post.comments.splice(i, 1);
-        }
+  .then(post => {
+    for (var i = 0; i < post.comments.length; i++) {
+      if (post.comments[i] == commentId) {
+        post.comments.splice(i, 1);
       }
-      Post.findByIdAndUpdate(id, post, {new: true})
-      .then(() => {
-        return;
-      })
-      .catch(err => Promise.reject(createError(404, err.message)));
-      return commentId;
+    }
+    Post.findByIdAndUpdate(id, post, {new: true})
+    .then(() => {
+      return;
     })
     .catch(err => Promise.reject(createError(404, err.message)));
+    return commentId;
+  })
+  .catch(err => Promise.reject(createError(404, err.message)));
 };
