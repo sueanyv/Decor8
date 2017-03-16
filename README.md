@@ -89,7 +89,7 @@ Before learning how to code, Cayla was pursuing a career in the healthcare field
 
 My name is Jeremiah Walters and I am a Full-Stack JavaScript Developer.  I consider myself an User Experience Advocate.  Prior to programming I worked as a professional in the service industry for 8 years and a year ago I discovered that I have an empathetic passion for the user experience.  I realized that technology is incorporated with everything we do on a daily basis.  By using skills I developed in the service industry, combined with a powerful language such as JavaScript,  I can make everyone’s day to day experience with technology better.  I would be a great asset to any team that believes in continuous integration, innovation and values the user experience.
 
-[Sugey](/images/sugey.jpg)
+![Sugey](/images/sugey.jpg)
 
 ### Sugey Valencia
 
