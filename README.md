@@ -1,6 +1,6 @@
 # DECOR8
 
-[![CoverageStatus](https://coveralls.io/repos/github/sueanyv/Decor8/badge.svg?branch=master)](https://coveralls.io/github/sueanyv/Decor8?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/sueanyv/Decor8/badge.svg?branch=master)](https://coveralls.io/github/sueanyv/Decor8?branch=master)
 
 # Overview
 
@@ -15,7 +15,7 @@
 # General Website Flow/ How to send a request using HTTPie
 
 ## PROFILE
-            **Endpoints & Example HTTPie Requests**
+            **Endpoints** **&** **Example** **HTTPie** **Requests**
 
             Post   | api/profile          Will create a profile for a user.
 
@@ -73,7 +73,7 @@
 
 ## COMMENT
             **Endpoints & Example HTTPie Requests**
-                       
+
             Post   | api/postID/:postId/comment            Will create a comment for a user associated with a post.
 
             http -f POST https://production-decorate.herokuapp.com/api/comment message="example message" image@[image file path]
