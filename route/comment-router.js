@@ -67,14 +67,13 @@ commentRouter.get('/api/comment/:id', bearerAuth, function(req, res, next) {
   debug('GET: api/comment/:id');
 
   Comment.findById(req.params.id)
-    .then(comment => {
-      if ( comment.userId.toString() !== req.user._id.toString()){
-        return next(createError(401, 'invalid user'));
-
-      }
-      res.json(comment);
-    })
-    .catch(next);
+  .then(comment => {
+    if ( comment.userId.toString() !== req.user._id.toString()){
+      return next(createError(401, 'invalid user'));
+    }
+    res.json(comment);
+  })
+  .catch(next);
 });
 
 commentRouter.put('/api/comment/:id', bearerAuth, jsonParser, function(req, res, next){

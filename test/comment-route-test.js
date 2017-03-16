@@ -8,7 +8,6 @@ const awsMocks = require('./lib/aws-mocks.js'); //eslint-disable-line
 const serverToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
 
-
 const Comment = require('../model/comment.js');
 const User = require('../model/user.js');
 const Post = require('../model/post.js');
@@ -287,6 +286,68 @@ describe('Comment Routes', () => {
         }).catch(done);
       });
       it('should return an updated Post', done => {
+        request.put(`${url}/api/comment/${this.tempComment._id}`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send({
+          message: 'sugey,brian,cayla'})
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.status).to.equal(200);
+            console.log('res bdy in ****', res.body);
+            expect(res.body.message).to.equal('sugey,brian,cayla');
+            expect(res.body.userId).to.equal(this.tempUser._id.toString());
+            done();
+          });
+      });
+    });
+    describe('with an invalid body', () => {
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategory = category;
+          done();
+        }).catch(done);
+      });
+      before(done => {
+        examplePost.categoryID = this.tempCategory._id;
+        examplePost.userID = this.tempUser._id;
+        new Post(examplePost).save()
+        .then(post => {
+          this.tempPost = post;
+          exampleComment.userId = this.tempUser._id;
+          exampleComment.postId = this.tempPost._id;
+
+          done();
+        }).catch(done);
+      });
+      before(done => {
+        exampleComment.objectKey = 'stuff';
+        exampleComment.imageURI = 'stuff';
+        exampleComment.userId = this.tempUser._id;
+        exampleComment.postId = this.tempPost._id;
+        new Comment(exampleComment).save()
+        .then(comment => {
+          this.tempComment = comment;
+          done();
+        }).catch(done);
+      });
+      it('should return a 400 error', done => {
         request.put(`${url}/api/comment/${this.tempComment._id}`)
         .set({
           Authorization: `Bearer ${this.tempToken}`

@@ -79,10 +79,10 @@ Post.findByIdAndRemoveComment = function(id, commentId) {
         }
       }
       Post.findByIdAndUpdate(id, post, {new: true})
-        .then(() => {
-          return;
-        })
-        .catch(err => Promise.reject(createError(404, err.message)));
+      .then(() => {
+        return;
+      })
+      .catch(err => Promise.reject(createError(404, err.message)));
       return commentId;
     })
     .catch(err => Promise.reject(createError(404, err.message)));
