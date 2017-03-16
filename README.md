@@ -36,24 +36,60 @@
 ## CATEGORY
             Endpoints                   
             Post   | api/category          Will create a category.
+
+            http -f POST https://production-decorate.herokuapp.com/api/category categoryType="category example" desc="example description"
+
             Get    | api/category/:id      Will get all properties of a users category. Will populate with list of Post's associated.
+
+            http GET https://production-decorate.herokuapp.com/api/category/[categoryId]
+
             Put    | api/category/:id      Will update a category name or description.
+
+            http -f PUT https://production-decorate.herokuapp.com/api/category[categoryId] categoryType="new category example" desc="new example description"
+
             Delete | api/category/:id      Will delete a category.
+
+            http DELETE https://production-decorate.herokuapp.com/api/category/[categoryId]
 
 ## POST
             Endpoints                   
             Post   | api/category/:categoryID/post          Will create a post for a user associated with a Category.
+
+            http -f POST https://production-decorate.herokuapp.com/api/post name="example name" desc="example description" price="Integer" userID="user's id" categoryID="asscoiated category ID" image@[image path]
+
             Get    | api/post/:id                           Will get all properties of a users post and populate comments on post.
+
+            http GET https://production-decorate.herokuapp.com/api/post/[postId]
+
             Put    | api/post/:id                           Will update a user's post.
+
+            http -f PUT https://production-decorate.herokuapp.com/api/post/[postId] name="example name" desc="example description" price="Integer" userID="user's id" categoryID="asscoiated category ID"
+
             Delete | api/category/:categoryID/post/:id      Will delete a user's post and remove its association from category.
+
+            http DELETE https://production-decorate.herokuapp.com/api/post/[postId]
 
 ## COMMENT
             Endpoints                   
             Post   | api/postID/:postId/comment            Will create a comment for a user associated with a post.
+
+            http -f POST https://production-decorate.herokuapp.com/api/comment message="example message" image@[image file path]
+
             Get    | api/comment/:commentId                Will get all properties of a comment.
+
+            http GET https://production-decorate.herokuapp.com/api/comment/[comment id]
+
             Put    | api/comment/:commentId                Will update a user's comment.
+
+            http -f PUT https://production-decorate.herokuapp.com/api/comment/[comment id] message="new example message"
+
             Put    | api/comment/:commentId/upvote
+
+            http -f PUT https://production-decorate.herokuapp.com/api/comment/[comment id] message="new example message"
+
             Delete | api/post/:postId/comment/:commentId   Will delete a user's comment, and remove association with a post.
+
+            http DELETE https://production-decorate.herokuapp.com/api/comment/[comment id]
 
 
 ## Example Post
