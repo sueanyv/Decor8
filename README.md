@@ -15,13 +15,14 @@
 # General Website Flow/ How to send a request using HTTPie
 
 ## PROFILE
-            Endpoints & Example HTTPie Requests
+            **Endpoints & Example HTTPie Requests**
+
             Post   | api/profile          Will create a profile for a user.
 
             http -f POST https://production-decorate.herokuapp.com/api/profile name="example name" bio="example bio" userId="Id of User" image@exampleimage/path
 
             Get    | api/profile/:id      Will get all properties of a users profile.
-            
+
             http GET https://production-decorate.herokuapp.com/api/profile/[usersId]
 
             Put    | api/profile/:id      Will update a user's profile.
