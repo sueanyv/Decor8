@@ -291,15 +291,15 @@ describe('Comment Routes', () => {
           Authorization: `Bearer ${this.tempToken}`
         })
         .send({
-          message: 'sugey,brian,cayla'})
-          .end((err, res) => {
-            if (err) return done(err);
-            expect(res.status).to.equal(200);
-            console.log('res bdy in ****', res.body);
-            expect(res.body.message).to.equal('sugey,brian,cayla');
-            expect(res.body.userId).to.equal(this.tempUser._id.toString());
-            done();
-          });
+          message: 'sugey,brian,cayla'
+        })
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.message).to.equal('sugey,brian,cayla');
+          expect(res.body.userId).to.equal(this.tempUser._id.toString());
+          done();
+        });
       });
     });
     describe('with an invalid body', () => {
@@ -465,7 +465,6 @@ describe('Comment Routes', () => {
         new Post(examplePost).save()
         .then( post => {
           post.comments.push(this.tempComment._id);
-          console.log('before block test', post);
           this.tempPost = post;
           return Post.findByIdAndUpdate(post._id, post);
         })
@@ -554,64 +553,63 @@ describe('Comment Routes', () => {
         }).catch(done);
       });
       it('should return an updated Comment', done => {
-        console.log('$$$$$###', this.tempComment._id)
         request.put(`${url}/api/comment/${this.tempComment._id}/upvote`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
         .send({
-          message: 'sugey,cayla'})
-          .end((err, res) => {
-            if (err) return done(err);
-            expect(res.status).to.equal(200);
-            console.log('res bdy in ****', res.body.upvote);
-            expect(res.body.message).to.equal('sugey,cayla');
-            expect(res.body.upVote).to.equal(1);
-            expect(res.body.userId).to.equal(this.tempUser._id.toString());
-            done();
-          });
-        });
-      });
-      describe('with an invalid body', () => {
-        it('should return a 400 error', done => {
-          request.put(`${url}/api/comment/${this.tempComment._id}/upvote`)
-            .set({
-              Authorization: `Bearer ${this.tempToken}`
-            })
-            .send({ mersage:'blahwrong',})
-            .end((err, res) => {
-              expect(res.status).to.equal(400);
-              done();
-            });
-        });
-      });
-      describe('with an unfound post ID', () => {
-        it('should return a 404', done => {
-          request.put(`${url}/api/comment/`)
-            .set({
-              Authorization: `Bearer ${this.tempToken}`
-            })
-            .send({ message:'blahwrong',})
-            .end((err, res) => {
-              expect(err.message).to.equal('Not Found');
-              expect(res.status).to.equal(404);
-              done();
-            });
-        });
-      });
-      describe('with an invalid token', () => {
-        it('should return a 401 error', done => {
-          request.put(`${url}/api/comment/${this.tempComment._id}/upvote`)
-            .set({
-              Authorization: 'Bear claws'
-            })
-            .send({name: 'nope', desc:'nada', price: 1 })
-            .end((err, res) => {
-              expect(err.message).to.equal('Unauthorized');
-              expect(res.status).to.equal(401);
-              done();
-            });
+          message: 'sugey,cayla'
+        })
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.message).to.equal('sugey,cayla');
+          expect(res.body.upVote).to.equal(1);
+          expect(res.body.userId).to.equal(this.tempUser._id.toString());
+          done();
         });
       });
     });
- });
+    describe('with an invalid body', () => {
+      it('should return a 400 error', done => {
+        request.put(`${url}/api/comment/${this.tempComment._id}/upvote`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send({ mersage:'blahwrong',})
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+    describe('with an unfound post ID', () => {
+      it('should return a 404', done => {
+        request.put(`${url}/api/comment/`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send({ message:'blahwrong',})
+        .end((err, res) => {
+          expect(err.message).to.equal('Not Found');
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+    describe('with an invalid token', () => {
+      it('should return a 401 error', done => {
+        request.put(`${url}/api/comment/${this.tempComment._id}/upvote`)
+        .set({
+          Authorization: 'Bear claws'
+        })
+        .send({name: 'nope', desc:'nada', price: 1 })
+        .end((err, res) => {
+          expect(err.message).to.equal('Unauthorized');
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
+});

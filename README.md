@@ -15,12 +15,15 @@
 # General Website Flow/ How to send a request using HTTPie
 
 ## PROFILE
-            Endpoints                   
+            Endpoints & Example HTTPie Requests
             Post   | api/profile          Will create a profile for a user.
-            HTTP POST
+            http -f POST https://production-decorate.herokuapp.com/api/profile name="example name" bio="example bio" userId="Id of User" image@exampleimage/path
             Get    | api/profile/:id      Will get all properties of a users profile.
+            http GET https://production-decorate.herokuapp.com/api/profile/[usersId]
             Put    | api/profile/:id      Will update a user's profile.
+            http -f PUT https://production-decorate.herokuapp.com/api/profile/[usersId] name="new example name" bio="new example bio"
             Delete | api/profile/:id      Will delete a user's profile.
+            http DELETE https://production-decorate.herokuapp.com/api/profile/[usersId]
 
 ## CATEGORY
             Endpoints                   
@@ -41,6 +44,7 @@
             Post   | api/postID/:postId/comment            Will create a comment for a user associated with a post.
             Get    | api/comment/:commentId                Will get all properties of a comment.
             Put    | api/comment/:commentId                Will update a user's comment.
+            Put    | api/comment/:commentId/upvote
             Delete | api/post/:postId/comment/:commentId   Will delete a user's comment, and remove association with a post.
 
 

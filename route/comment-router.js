@@ -91,13 +91,12 @@ commentRouter.put('/api/comment/:id/upvote', bearerAuth, jsonParser, function(re
   debug('PUT api/comment/:id/upvote');
 
   if(!req.body.message) return next(createError(400, 'expected an message.'));
-Comment.findById(req.params.id)
-.then( comment => {
+  Comment.findById(req.params.id)
+  .then( comment => {
     comment.upVote += 1;
-    comment.message = req.body.message
-    return Comment.findByIdAndUpdate(req.params.id, comment, { new: true })
-
-    })
+    comment.message = req.body.message;
+    return Comment.findByIdAndUpdate(req.params.id, comment, { new: true });
+  })
     .then( comment => {
       res.json(comment);
     })
