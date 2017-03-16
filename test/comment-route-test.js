@@ -465,6 +465,7 @@ describe('Comment Routes', () => {
         new Post(examplePost).save()
         .then( post => {
           post.comments.push(this.tempComment._id);
+          console.log('before block test', post);
           this.tempPost = post;
           return Post.findByIdAndUpdate(post._id, post);
         })
@@ -499,12 +500,6 @@ describe('Comment Routes', () => {
           Authorization: `Bearer ${this.tempToken}`
         })
         .end((err, res) => {
-
-          Post.findById(this.tempPost._id)
-          .then(() => {
-            return;
-          })
-          .catch(done);
           if(err) return done(err);
           expect(res.status).to.equal(204);
           done();

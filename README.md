@@ -12,11 +12,12 @@
     + **Post** - Stores the user whom created the Post, which category the post belongs to, a list of all the comments on the post,  a picture uri for the post (stored in s3), and a description of what the user is looking for in the post.
     + **Comment** - Holds references to the user who created the comment and the post that the comment was made on. It also holds the comment message that was made as well as the picutre that was associated with it (also stored in s3) and when the comment was created.
 
-# General Website Flow
+# General Website Flow/ How to send a request using HTTPie
 
 ## PROFILE
             Endpoints                   
             Post   | api/profile          Will create a profile for a user.
+            HTTP POST
             Get    | api/profile/:id      Will get all properties of a users profile.
             Put    | api/profile/:id      Will update a user's profile.
             Delete | api/profile/:id      Will delete a user's profile.
@@ -43,7 +44,7 @@
             Delete | api/post/:postId/comment/:commentId   Will delete a user's comment, and remove association with a post.
 
 
-##Example Post
+## Example Post
 
 When making an appropriate api call you will get a matching response. Below are the parts of the call that you will need to include.
 
@@ -71,3 +72,31 @@ Authorization: `Bearer ${yourTokenHere}`
   postList: [],
   created: '2017-03-14T22:38:49.008Z'
 ```
+
+
+
+# About The Developers
+
+<img src="images/cayla.jpg" width="400">
+
+### Cayla Zabel
+
+Before learning how to code, Cayla was pursuing a career in the healthcare field. She has a passion to help people and wants to make an impact on both the community and the world. Cayla decided to look into coding because her brother is a successful software developer. She has been able to expose herself to the field. It was intriguing to watch an idea turn into a real application on the web. She chose JavaScript in particular because there is so much room for growth in the field. JavaScript is always changing which allows her to be a lifelong learner. Eventually Cayla wants to take her knowledge in technology and apply it to healthcare and have the ability to help people on a global scale with new applications.
+
+<img src="images/jeremiah.jpg" width="400">
+
+### Jeremiah Walters
+
+My name is Jeremiah Walters and I am a Full-Stack JavaScript Developer.  I consider myself an User Experience Advocate.  Prior to programming I worked as a professional in the service industry for 8 years and a year ago I discovered that I have an empathetic passion for the user experience.  I realized that technology is incorporated with everything we do on a daily basis.  By using skills I developed in the service industry, combined with a powerful language such as JavaScript,  I can make everyone’s day to day experience with technology better.  I would be a great asset to any team that believes in continuous integration, innovation and values the user experience.
+
+<img src="images/sugey.jpg" width="400">
+
+### Sugey Valencia
+
+My name is Sugey Valencia , I am an Air Force veteran  and I also worked for the department of veterans affairs. I decided to become a software developer because I wanted to create, contribute and challenge myself. I love that we can use code to create things from the ground up. With coding I am constantly challenged and learning new skills. Most importantly I hope to one day help build technology that can change the world for the better.
+
+<img src="images/brian.jpg" width="400">
+
+### Brian Alspach
+
+Before coming to CodeFellows I worked as an Assistant Real Estate Manager at CBRE, Inc. I was able to work with clients to problem solve solutions for issues that came up. I enjoyed working to help people and still do. When dabbling with some code I discovered a real passion for the logic behind what makes a website run. As I have continued my journey into coding that passion has continued to grow. I chose to specialize in JavaScript because it is such a robust language has been a great base language to branch out to all the different things I want to do in coding. Ideally I see myself on a team of developers working with logic and data sto create applications that solve real issues.

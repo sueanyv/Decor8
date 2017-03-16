@@ -10,6 +10,7 @@ const awsMocks = require('./lib/aws-mocks.js');
 const Post = require('../model/post.js');
 const User = require('../model/user.js');
 const Category = require('../model/category.js');
+const Comment = require('../model/comment.js');
 
 // const AWS = require('aws-sdk-mock');
 
@@ -36,6 +37,11 @@ const examplePost = {
   image: `${__dirname}/data/tester.png`,
 };
 
+const exampleComment = {
+  message: 'example message',
+  imageURI: 'example URI',
+  objectKey: 'example Key'
+};
 
 describe('Post Routes', function() {
   before( done => {
@@ -185,6 +191,20 @@ describe('Post Routes', function() {
       })
       .catch(done);
     });
+    before(done => {
+      exampleComment.userId = this.tempUser._id;
+      exampleComment.postId = this.tempPost._id;
+      new Comment(exampleComment).save()
+      .then(comment => {
+        this.tempPost.comments.push(comment._id);
+        return Post.findByIdAndUpdate(this.tempPost._id, this.tempPost, {new:true});
+      })
+      .then(post => {
+        this.tempPost = post;
+        done();
+      })
+      .catch(done);
+    });
 
     after( done => {
       delete examplePost.userID;
@@ -197,6 +217,7 @@ describe('Post Routes', function() {
         Authorization: `Bearer ${this.tempToken}`
       })
       .end((err, res) => {
+        console.log('*************',res.body);
         if(err) return done(err);
         expect(res.status).to.equal(200);
         expect(res.body.name).to.equal(examplePost.name);
@@ -204,6 +225,8 @@ describe('Post Routes', function() {
         expect(res.body.categoryID).to.equal(this.tempCategory._id.toString());
         expect(res.body.imageURI).to.equal('stuff');
         expect(res.body.userID).to.be.a('String');
+        expect(res.body.comments.length).to.equal(1);
+        expect(res.body.comments[0].message).to.equal('example message');
         done();
       });
     });
