@@ -89,7 +89,6 @@ describe('Comment Routes', () => {
           this.tempPost = post;
           exampleComment.userId = this.tempUser._id;
           exampleComment.postId = this.tempPost._id;
-
           done();
         }).catch(done);
       });
@@ -133,9 +132,6 @@ describe('Comment Routes', () => {
     describe('not found', () => {
       it('should return a 404', done => {
         request.post(`${url}/api/post/postId/commen`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
@@ -407,9 +403,11 @@ describe('Comment Routes', () => {
       before ( done => {
         new Post(examplePost).save()
         .then( post => {
+          post.comments.push(this.tempComment._id);
           this.tempPost = post;
-          done();
+          return Post.findByIdAndUpdate(post._id, post);
         })
+        .then(() => done())
         .catch(done);
       });
       before(done => {

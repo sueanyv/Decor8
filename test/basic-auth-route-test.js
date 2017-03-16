@@ -77,5 +77,125 @@ describe('User Tests', function(){
         });
       });
     });
+    describe('Without authorization', function(){
+      before(done => {
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          done();
+        })
+        .catch(done);
+      });
+      after(done => {
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+      it('should return a token', done => {
+        debug('Signin Get');
+        request.get(`${url}/api/signin`)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+    describe('Without Basic in authorization', function(){
+      before(done => {
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          done();
+        })
+        .catch(done);
+      });
+      after(done => {
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+      it('should return a token', done => {
+        debug('Signin Get');
+        request.get(`${url}/api/signin`)
+        .set({
+          Authorization: `${this.tempToken}`
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+    describe('Without Username in  authorization', function(){
+      before(done => {
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          done();
+        })
+        .catch(done);
+      });
+      after(done => {
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+      it('should return a token', done => {
+        debug('Signin Get');
+        request.get(`${url}/api/signin`)
+        .set({
+          Authorization: 'Basic Random Text'
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+    describe('With Username authorizationbut not password', function(){
+      before(done => {
+        let user = new User(exampleUser);
+        user.generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          done();
+        })
+        .catch(done);
+      });
+      after(done => {
+        User.remove({})
+        .then(() => done())
+        .catch(done);
+      });
+      it('should return a token', done => {
+        debug('Signin Get');
+        request.get(`${url}/api/signin`)
+        .set({
+          Authorization: 'Basic username:'
+        })
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
+  describe('Get /', function(){
+    describe('I wouldnt know how to error this', function(){
+      it('should return a message', done => {
+        request.get(`${url}/`)
+        .end((err, res) => {
+          expect(res.text).to.equal('This is working!!');
+          done();
+        });
+      });
+    });
   });
 });
