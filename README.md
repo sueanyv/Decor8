@@ -77,25 +77,25 @@ Authorization: `Bearer ${yourTokenHere}`
 
 # About The Developers
 
-![Cayla](/images/cayla.jpg)
+![Cayla](/images/cayla.jpg =200x200)
 
 ### Cayla Zabel
 
 Before learning how to code, Cayla was pursuing a career in the healthcare field. She has a passion to help people and wants to make an impact on both the community and the world. Cayla decided to look into coding because her brother is a successful software developer. She has been able to expose herself to the field. It was intriguing to watch an idea turn into a real application on the web. She chose JavaScript in particular because there is so much room for growth in the field. JavaScript is always changing which allows her to be a lifelong learner. Eventually Cayla wants to take her knowledge in technology and apply it to healthcare and have the ability to help people on a global scale with new applications.
 
-![Jeremiah](/images/jeremiah.jpg)
+![Jeremiah](/images/jeremiah.jpg =200x200)
 
 ### Jeremiah Walters
 
 My name is Jeremiah Walters and I am a Full-Stack JavaScript Developer.  I consider myself an User Experience Advocate.  Prior to programming I worked as a professional in the service industry for 8 years and a year ago I discovered that I have an empathetic passion for the user experience.  I realized that technology is incorporated with everything we do on a daily basis.  By using skills I developed in the service industry, combined with a powerful language such as JavaScript,  I can make everyone’s day to day experience with technology better.  I would be a great asset to any team that believes in continuous integration, innovation and values the user experience.
 
-![Sugey](/images/sugey.jpg)
+![Sugey](/images/sugey.jpg =200x200)
 
 ### Sugey Valencia
 
 My name is Sugey Valencia , I am an Air Force veteran  and I also worked for the department of veterans affairs. I decided to become a software developer because I wanted to create, contribute and challenge myself. I love that we can use code to create things from the ground up. With coding I am constantly challenged and learning new skills. Most importantly I hope to one day help build technology that can change the world for the better.
 
-![Brian](/images/brian.jpg);
+![Brian](/images/brian.jpg =200x200);
 
 ### Brian Alspach
 
