@@ -512,4 +512,70 @@ describe('Comment Routes', () => {
       });
     });
   });
-});
+  describe('PUT: /api/comment/:id/vote', () => {
+    describe('with valid body, id and token', function() {
+      before(done => {
+        new User(exampleUser)
+        .generatePasswordHash(exampleUser.password)
+        .then(user => user.save())
+        .then(user => {
+          this.tempUser = user;
+          return user.generateToken();
+        })
+        .then(token => {
+          this.tempToken = token;
+          done();
+        })
+        .catch(done);
+      });
+      before(done => {
+        new Category(exampleCategory).save()
+        .then(category => {
+          this.tempCategory = category;
+          done();
+        }).catch(done);
+      });
+      before(done => {
+        examplePost.categoryID = this.tempCategory._id;
+        examplePost.userID = this.tempUser._id;
+        new Post(examplePost).save()
+        .then(post => {
+          this.tempPost = post;
+          exampleComment.userId = this.tempUser._id;
+          exampleComment.postId = this.tempPost._id;
+
+          done();
+        }).catch(done);
+      });
+      before(done => {
+        exampleComment.objectKey = 'stuff';
+        exampleComment.imageURI = 'stuff';
+        exampleComment.userId = this.tempUser._id;
+        exampleComment.postId = this.tempPost._id;
+        new Comment(exampleComment).save()
+        .then(comment => {
+          this.tempComment = comment;
+          done();
+        }).catch(done);
+      });
+      it('should return an updated Comment', done => {
+        console.log('$$$$$###', this.tempComment._id)
+        request.put(`${url}/api/comment/${this.tempComment._id}/upvote`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send({
+          message: 'sugey,cayla'})
+          .end((err, res) => {
+            if (err) return done(err);
+            expect(res.status).to.equal(200);
+            console.log('res bdy in ****', res.body.upvote);
+            expect(res.body.message).to.equal('sugey,cayla');
+            expect(res.body.upVote).to.equal(1);
+            expect(res.body.userId).to.equal(this.tempUser._id.toString());
+            done();
+          });
+        });
+      });
+    });
+ });

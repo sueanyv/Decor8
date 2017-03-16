@@ -9,7 +9,8 @@ const commentSchema = Schema({
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
   objectKey: { type: String, required: true, unique: true },
-  imageURI: { type: String, required: true }
+  imageURI: { type: String, required: true },
+  upVote: { type: Number, default:0}
 });
 
 
