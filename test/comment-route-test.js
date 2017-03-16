@@ -3,8 +3,6 @@
 require('./lib/test-env.js');
 const expect = require('chai').expect;
 const request = require('superagent');
-const awsMocks = require('./lib/aws-mocks.js'); //eslint-disable-line
-
 const serverToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
 
@@ -88,6 +86,7 @@ describe('Comment Routes', () => {
           this.tempPost = post;
           exampleComment.userId = this.tempUser._id;
           exampleComment.postId = this.tempPost._id;
+
           done();
         }).catch(done);
       });
@@ -100,6 +99,7 @@ describe('Comment Routes', () => {
       });
 
       it('should return a comment', done => {
+        console.log('in it in post test comments');
         request.post(`${url}/api/post/${this.tempPost._id}/comment`)
         .set({
           Authorization: `Bearer ${this.tempToken}`
@@ -110,8 +110,10 @@ describe('Comment Routes', () => {
         .attach('image', exampleComment.image)
         .end((err, res) => {
           if (err) return done(err);
+          console.log('*****');
           expect(res.status).to.equal(200);
           expect(res.body.message).to.equal(exampleComment.message);
+          // expect(res.body.imageURI).to.equal(awsMock.uploadMock)
           expect(res.body.postId).to.equal(this.tempPost._id.toString());
           done();
         });
@@ -131,6 +133,9 @@ describe('Comment Routes', () => {
     describe('not found', () => {
       it('should return a 404', done => {
         request.post(`${url}/api/post/postId/commen`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
         .set({
           Authorization: `Bearer ${this.tempToken}`
         })
@@ -207,6 +212,7 @@ describe('Comment Routes', () => {
       .set({
         Authorization: `Bearer ${this.tempToken}`
       })
+
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).to.equal(200);
@@ -305,36 +311,36 @@ describe('Comment Routes', () => {
     describe('with an invalid body', () => {
       before(done => {
         new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then(user => user.save())
-        .then(user => {
-          this.tempUser = user;
-          return user.generateToken();
-        })
-        .then(token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
+          .generatePasswordHash(exampleUser.password)
+          .then(user => user.save())
+          .then(user => {
+            this.tempUser = user;
+            return user.generateToken();
+          })
+          .then(token => {
+            this.tempToken = token;
+            done();
+          })
+          .catch(done);
       });
       before(done => {
         new Category(exampleCategory).save()
-        .then(category => {
-          this.tempCategory = category;
-          done();
-        }).catch(done);
+          .then(category => {
+            this.tempCategory = category;
+            done();
+          }).catch(done);
       });
       before(done => {
         examplePost.categoryID = this.tempCategory._id;
         examplePost.userID = this.tempUser._id;
         new Post(examplePost).save()
-        .then(post => {
-          this.tempPost = post;
-          exampleComment.userId = this.tempUser._id;
-          exampleComment.postId = this.tempPost._id;
+          .then(post => {
+            this.tempPost = post;
+            exampleComment.userId = this.tempUser._id;
+            exampleComment.postId = this.tempPost._id;
 
-          done();
-        }).catch(done);
+            done();
+          }).catch(done);
       });
       before(done => {
         exampleComment.objectKey = 'stuff';
@@ -342,109 +348,49 @@ describe('Comment Routes', () => {
         exampleComment.userId = this.tempUser._id;
         exampleComment.postId = this.tempPost._id;
         new Comment(exampleComment).save()
-        .then(comment => {
-          this.tempComment = comment;
-          done();
-        }).catch(done);
+          .then(comment => {
+            this.tempComment = comment;
+            done();
+          }).catch(done);
       });
       it('should return a 400 error', done => {
         request.put(`${url}/api/comment/${this.tempComment._id}`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
-        .send({
-          message: 'sugey,brian,cayla'})
-        .end((err, res) => {
-          if (err) return done(err);
-          expect(res.status).to.equal(200);
-          expect(res.body.message).to.equal('sugey,brian,cayla');
-          expect(res.body.userId).to.equal(this.tempUser._id.toString());
-          done();
-        });
-      });
-    });
-    describe('with an invalid body', () => {
-      before(done => {
-        new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then(user => user.save())
-        .then(user => {
-          this.tempUser = user;
-          return user.generateToken();
-        })
-        .then(token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
-      });
-      before(done => {
-        new Category(exampleCategory).save()
-        .then(category => {
-          this.tempCategory = category;
-          done();
-        }).catch(done);
-      });
-      before(done => {
-        examplePost.categoryID = this.tempCategory._id;
-        examplePost.userID = this.tempUser._id;
-        new Post(examplePost).save()
-        .then(post => {
-          this.tempPost = post;
-          exampleComment.userId = this.tempUser._id;
-          exampleComment.postId = this.tempPost._id;
-          done();
-        }).catch(done);
-      });
-      before(done => {
-        exampleComment.objectKey = 'stuff';
-        exampleComment.imageURI = 'stuff';
-        exampleComment.userId = this.tempUser._id;
-        exampleComment.postId = this.tempPost._id;
-        new Comment(exampleComment).save()
-        .then(comment => {
-          this.tempComment = comment;
-          done();
-        }).catch(done);
-      });
-      it('should return a 400 error', done => {
-        request.put(`${url}/api/comment/${this.tempComment._id}`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
-        .end((err, res) => {
-          expect(res.status).to.equal(400);
-          done();
-        });
+          .set({
+            Authorization: `Bearer ${this.tempToken}`
+          })
+          .end((err, res) => {
+            expect(res.status).to.equal(400);
+            done();
+          });
       });
     });
     describe('with an unfound post ID', () => {
       it('should return a 404', done => {
         request.put(`${url}/api/comment/`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
-        .send({message: 'sugey'})
-        .end((err, res) => {
-          expect(err.message).to.equal('Not Found');
-          expect(res.status).to.equal(404);
-          done();
-        });
+          .set({
+            Authorization: `Bearer ${this.tempToken}`
+          })
+          .send({message: 'sugey'})
+          .end((err, res) => {
+            expect(err.message).to.equal('Not Found');
+            expect(res.status).to.equal(404);
+            done();
+          });
       });
     });
   });
   describe('with an invalid token', () => {
     it('should return a 401 error', done => {
       request.put(`${url}/api/comment/${this.tempComment._id}`)
-      .set({
-        Authorization: 'Bear claws'
-      })
-      .send({message: 'sugey'})
-      .end((err, res) => {
-        expect(err.message).to.equal('Unauthorized');
-        expect(res.status).to.equal(401);
-        done();
-      });
+        .set({
+          Authorization: 'Bear claws'
+        })
+        .send({message: 'sugey'})
+        .end((err, res) => {
+          expect(err.message).to.equal('Unauthorized');
+          expect(res.status).to.equal(401);
+          done();
+        });
     });
   });
   describe('Delete /api/post/postId/comment/:id', () =>{
@@ -455,60 +401,59 @@ describe('Comment Routes', () => {
         exampleComment.userId = this.tempUser._id;
         exampleComment.postId = this.tempPost._id;
         new Comment(exampleComment).save()
-        .then(comment => {
-          this.tempComment = comment;
-          done();
-        }).catch(done);
+          .then(comment => {
+            this.tempComment = comment;
+            done();
+          }).catch(done);
       });
 
       before ( done => {
+          // examplePost.userID = this.tempUser._id;
         new Post(examplePost).save()
-        .then( post => {
-          post.comments.push(this.tempComment._id);
-          this.tempPost = post;
-          return Post.findByIdAndUpdate(post._id, post);
-        })
-        .then(() => done())
-        .catch(done);
+          .then( post => {
+            this.tempPost = post;
+            done();
+          })
+          .catch(done);
       });
       before(done => {
         new User(exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then(user => user.save())
-        .then(user => {
-          this.tempUser = user;
-          return user.generateToken();
-        })
-        .then(token => {
-          this.tempToken = token;
-          done();
-        })
-        .catch(done);
+          .generatePasswordHash(exampleUser.password)
+          .then(user => user.save())
+          .then(user => {
+            this.tempUser = user;
+            return user.generateToken();
+          })
+          .then(token => {
+            this.tempToken = token;
+            done();
+          })
+          .catch(done);
       });
       before(done => {
         new Category(exampleCategory).save()
-        .then(category => {
-          this.tempCategoryId = category._id;
-          done();
-        })
-        .catch(done);
+          .then(category => {
+            this.tempCategoryId = category._id;
+            done();
+          })
+          .catch(done);
       });
       it('should return a 204', done => {
         request.delete(`${url}/api/post/${this.tempPost._id}/comment/${this.tempComment._id}`)
-        .set({
-          Authorization: `Bearer ${this.tempToken}`
-        })
-        .end((err, res) => {
-
-          Post.findById(this.tempPost._id)
-          .then(() => {
-            return;
+          .set({
+            Authorization: `Bearer ${this.tempToken}`
           })
-          .catch(done);
-          if(err) return done(err);
-          expect(res.status).to.equal(204);
-          done();
-        });
+          .end((err, res) => {
+
+            Post.findById(this.tempPost._id)
+            .then(() => {
+              return;
+            })
+            .catch(done);
+            if(err) return done(err);
+            expect(res.status).to.equal(204);
+            done();
+          });
       });
     });
   });
