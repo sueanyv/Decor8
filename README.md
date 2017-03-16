@@ -17,12 +17,19 @@
 ## PROFILE
             Endpoints & Example HTTPie Requests
             Post   | api/profile          Will create a profile for a user.
+
             http -f POST https://production-decorate.herokuapp.com/api/profile name="example name" bio="example bio" userId="Id of User" image@exampleimage/path
+
             Get    | api/profile/:id      Will get all properties of a users profile.
+            
             http GET https://production-decorate.herokuapp.com/api/profile/[usersId]
+
             Put    | api/profile/:id      Will update a user's profile.
+
             http -f PUT https://production-decorate.herokuapp.com/api/profile/[usersId] name="new example name" bio="new example bio"
+
             Delete | api/profile/:id      Will delete a user's profile.
+
             http DELETE https://production-decorate.herokuapp.com/api/profile/[usersId]
 
 ## CATEGORY
