@@ -18,7 +18,7 @@ AWS.config.setPromisesDependency(require('bluebird'));
 
 const s3 = new AWS.S3();
 const dataDir = `${__dirname}/../data`;
-const upload = multer({ dest: dataDir }); //where our file exist
+const upload = multer({ dest: dataDir });
 
 const postRouter = module.exports = new Router();
 
@@ -61,7 +61,6 @@ postRouter.post('/api/category/:categoryID/post', bearerAuth, jsonParser, upload
       userID: req.user._id,
       categoryID:req.params.categoryID
     };
-    // return new Post(postData).save();
     return Category.findByIdAndAddPost(req.params.categoryID, postData);
   })
   .then( post => res.json(post))

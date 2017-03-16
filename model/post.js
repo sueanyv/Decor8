@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Comment = require('./comment.js');
-//Schema
+
 const postSchema = Schema({
   name: {
     type: String,
@@ -78,9 +78,7 @@ Post.findByIdAndRemoveComment = function(id, commentId) {
           post.comments.splice(i, 1);
         }
       }
-      Post.findByIdAndUpdate(id, post, {
-          new: true
-        })
+      Post.findByIdAndUpdate(id, post, {new: true})
         .then(() => {
           return;
         })

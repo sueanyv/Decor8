@@ -11,8 +11,6 @@ const Post = require('../model/post.js');
 const User = require('../model/user.js');
 const Category = require('../model/category.js');
 
-// const AWS = require('aws-sdk-mock');
-
 const serverToggle = require('./lib/server-toggle.js');
 const server = require('../server.js');
 
@@ -318,7 +316,6 @@ describe('Post Routes', function() {
   describe('Delete /api/category/:categoryID/post/:id', function(){
     describe('With a valid id', function(){
       before ( done => {
-        // examplePost.userID = this.tempUser._id;
         new Post(examplePost).save()
           .then( post => {
             this.tempPost = post;
