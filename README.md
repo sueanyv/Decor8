@@ -15,7 +15,7 @@
 # General Website Flow/ How to send a request using HTTPie
 
 ## PROFILE
-            __Endpoints__ __&__ __Example__ __HTTPie__ __Requests__
+            ### Endpoints & Example HTTPie Requests
 
             Post   | api/profile          Will create a profile for a user.
 
@@ -34,7 +34,7 @@
             http DELETE https://production-decorate.herokuapp.com/api/profile/[usersId]
 
 ## CATEGORY
-            __Endpoints__ __&__ __Example__ __HTTPie__ __Requests__
+            ### Endpoints & Example HTTPie Requests
 
             Post   | api/category          Will create a category.
 
@@ -53,7 +53,7 @@
             http DELETE https://production-decorate.herokuapp.com/api/category/[categoryId]
 
 ## POST
-            __Endpoints__ __&__ __Example__ __HTTPie__ __Requests__
+            ### Endpoints & Example HTTPie Requests
 
             Post   | api/category/:categoryID/post          Will create a post for a user associated with a Category.
 
@@ -72,7 +72,7 @@
             http DELETE https://production-decorate.herokuapp.com/api/post/[postId]
 
 ## COMMENT
-            __Endpoints__ __&__ __Example__ __HTTPie__ __Requests__
+            ### Endpoints & Example HTTPie Requests
 
             Post   | api/postID/:postId/comment            Will create a comment for a user associated with a post.
 
