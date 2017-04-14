@@ -252,6 +252,52 @@ describe('Category Routes', function(){
       });
     });
   });
+  describe('GET /api/category', function(){
+    before(done => {
+      new Category(exampleCategory).save()
+      .then(category => {
+        this.tempCategory = category;
+        done();
+      })
+      .catch(done);
+    });
+    before(done => {
+      new Category({categoryType: 'beds', desc: 'this is a description'}).save()
+      .then(category => {
+        this.tempCategory = category;
+        done();
+      })
+      .catch(done);
+    });
+    before(done => {
+      new User(exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then(user => user.save())
+      .then(user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then(token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+    describe('With a token', () => {
+      it('should return all galleries', done => {
+        request.get(`${url}/api/category`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.length).to.equal(2);
+          done();
+        });
+      });
+    });
+  });
   describe('PUT /api/category/:id', function(){
     describe('With a valid body, id, and token', function(){
       before(done => {
