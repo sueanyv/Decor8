@@ -231,7 +231,7 @@ describe('Post Routes', function() {
     });
 
     it('should return a post', done => {
-      request.get(`${url}/api/post/`)
+      request.get(`${url}/api/post/badid`)
       .set({
         Authorization: `Bearer ${this.tempToken}`,
       })
@@ -251,73 +251,144 @@ describe('Post Routes', function() {
       });
     });
   });
-  describe('PUT: /api/post/:id', () => {
-    describe('with valid body, id and token', function(){
-      before( done => {
-        new User (exampleUser)
-        .generatePasswordHash(exampleUser.password)
-        .then( user => user.save())
-        .then( user => {
-          this.tempUser = user;
-          return user.generateToken();
+  describe('GET: /api/post', function(){
+    beforeEach( done => {
+      new User (exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+    beforeEach( done => {
+      new Category(exampleCategory).save()
+      .then( category => {
+        this.tempCategory = category;
+        done();
+      })
+      .catch(done);
+    });
+    beforeEach( done => {
+      examplePost.userID = this.tempUser._id;
+      examplePost.imageURI = 'stuff';
+      examplePost.objectKey = 'stuff';
+      examplePost.categoryID = this.tempCategory._id;
+      new Post(examplePost).save()
+      .then( post => {
+        this.tempPost = post;
+        done();
+      })
+      .catch(done);
+    });
+    beforeEach( done => {
+      new Post({
+        name: 'example name 2',
+        desc: 'example desc 2',
+        price: 45,
+        userID: this.tempUser._id,
+        categoryID: this.tempCategory._id,
+        imageURI: 'exampleURI 2',
+        objectKey: 'exmapleObjectKey 2'
+      }).save()
+      .then(post => {
+        this.tempPost2 = post;
+        done();
+      })
+      .catch(done);
+    });
+    afterEach( done => {
+      delete examplePost.userID;
+      done();
+    });
+    describe('with a token', () => {
+      it('should return all posts', done => {
+        request.get(`${url}/api/post`)
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
         })
-        .then( token => {
-          this.tempToken = token;
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.length).to.equal(2);
           done();
-        })
-        .catch(done);
+        });
       });
-      before ( done => {
-        examplePost.userID = this.tempUser._id;
-        new Post(examplePost).save()
-        .then( post => {
-          this.tempPost = post;
-          done();
-        })
-        .catch(done);
-      });
+    });
+  });
+  describe('PUT: /api/post/:id', function(){
+    before( done => {
+      new User (exampleUser)
+      .generatePasswordHash(exampleUser.password)
+      .then( user => user.save())
+      .then( user => {
+        this.tempUser = user;
+        return user.generateToken();
+      })
+      .then( token => {
+        this.tempToken = token;
+        done();
+      })
+      .catch(done);
+    });
+    before ( done => {
+      examplePost.userID = this.tempUser._id;
+      new Post(examplePost).save()
+      .then( post => {
+        this.tempPost = post;
+        done();
+      })
+      .catch(done);
+    });
+    describe('with valid body, id and token', () => {
       it('should return an updated Post', done => {
         request.put(`${url}/api/post/${this.tempPost._id}`)
         .send({ name: 'new name',
           desc: 'new description',
           price: 11})
         .set({
-          Authorization: `Bearer ${this.tempToken}`})
-          .end((err, res) => {
-            if(err) return done(err);
-            expect(res.status).to.equal(200);
-            expect(res.body.name).to.equal('new name');
-            expect(res.body.desc).to.equal('new description');
-            expect(res.body.price).to.equal(11);
-            done();
-          });
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal('new name');
+          expect(res.body.desc).to.equal('new description');
+          expect(res.body.price).to.equal(11);
+          done();
+        });
       });
     });
     describe('with an invalid body', () => {
       it('should return a 400 error', done => {
         request.put(`${url}/api/post/${this.tempPost._id}`)
-          .set({
-            Authorization: `Bearer ${this.tempToken}`
-          })
-          .send({ NahName:'blahwrong', DuhDesc:'wrongupdate'})
-          .end((err, res) => {
-            expect(res.status).to.equal(400);
-            done();
-          });
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send({ NahName:'blahwrong', DuhDesc:'wrongupdate'})
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
       });
     });
     describe('with an unfound post ID', () => {
       it('should return a 404', done => {
         request.put(`${url}/api/post/`)
-          .set({
-            Authorization: `Bearer ${this.tempToken}`
-          })
-          .send({name: 'no dice', desc: 'no luck'})
-          .end((err, res) => {
-            expect(err.message).to.equal('Not Found');
-            expect(res.status).to.equal(404);
-            done();
-          });
+        .set({
+          Authorization: `Bearer ${this.tempToken}`
+        })
+        .send({name: 'no dice', desc: 'no luck'})
+        .end((err, res) => {
+          expect(err.message).to.equal('Not Found');
+          expect(res.status).to.equal(404);
+          done();
+        });
       });
     });
   });
