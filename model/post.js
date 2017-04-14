@@ -8,44 +8,15 @@ const Schema = mongoose.Schema;
 
 const Comment = require('./comment.js');
 const postSchema = Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  desc: {
-    type: String,
-    required: true
-  },
-  price: {
-    type: Number,
-    required: true
-  },
-  userID: {
-    type: Schema.Types.ObjectId,
-    required: true
-  },
-  categoryID: {
-    type: Schema.Types.ObjectId,
-    required: true
-  },
-  comments: [{
-    type: Schema.Types.ObjectId,
-    ref: 'comment'
-  }],
-  imageURI: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  objectKey: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  created: {
-    type: Date,
-    default: Date.now
-  }
+  name: { type: String, required: true },
+  desc: { type: String, required: true },
+  price: { type: Number, required: true },
+  userID: { type: Schema.Types.ObjectId, required: true },
+  categoryID: { type: Schema.Types.ObjectId, required: true },
+  comments: [{ type: Schema.Types.ObjectId, ref: 'comment' }],
+  imageURI: { type: String, required: true, unique: true },
+  objectKey: { type: String, required: true, unique: true },
+  created: { type: Date, default: Date.now }
 });
 
 const Post = module.exports = mongoose.model('post', postSchema);

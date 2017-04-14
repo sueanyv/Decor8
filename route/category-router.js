@@ -17,7 +17,16 @@ categoryRouter.post('/api/category', bearerAuth, jsonParser, function(req, res, 
   if(!req.body.categoryType) return next(createError(400, 'expected a category'));
   if(!req.body.desc) return next(createError(400, 'expected a description'));
 
-  return new Category(req.body).save()
+  new Category(req.body).save()
+  .then(category => res.json(category))
+  .catch(next);
+});
+
+categoryRouter.get('/api/category', bearerAuth, function(req, res, next){
+  debug('Get /api/category');
+
+  Category.find({})
+  .populate('posts')
   .then(category => res.json(category))
   .catch(next);
 });
@@ -35,9 +44,7 @@ categoryRouter.put('/api/category/:id', bearerAuth, jsonParser, function(req, re
   debug('Put /api/category/:id');
   if(!req.body.categoryType && !req.body.name) return next(createError(400, 'expected an update.'));
   Category.findByIdAndUpdate(req.params.id, req.body, {new: true})
-  .then(category => {
-    return res.json(category);
-  })
+  .then(category => res.json(category))
   .catch(next);
 });
 

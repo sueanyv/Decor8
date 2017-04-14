@@ -83,6 +83,15 @@ postRouter.get('/api/post/:id', bearerAuth, function(req, res, next){
   .catch(next);
 });
 
+postRouter.get('/api/post', bearerAuth, function(req, res, next){
+  debug('Get: /api/post');
+
+  Post.find({})
+  .populate('comments')
+  .then(posts => res.json(posts))
+  .catch(next);
+});
+
 postRouter.put('/api/post/:id', bearerAuth, jsonParser, function(req, res, next){
   debug('PUT: /api/post/:id');
 
