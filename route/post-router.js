@@ -75,9 +75,6 @@ postRouter.get('/api/post/:id', bearerAuth, function(req, res, next){
   Post.findById(req.params.id)
   .populate('comments')
   .then( post => {
-    if ( post.userID.toString() !== req.user._id.toString()) {
-      return next(createError(401, 'invalid user'));
-    }
     res.json(post);
   })
   .catch(next);
